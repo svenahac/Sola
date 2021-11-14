@@ -14,7 +14,10 @@ vsota () {
     skupaj=0
     for ((i=$1;i<=$2;i++));
     do
-        skupaj=$((skupaj + $i ))
+        if (($i % 2 == 0))
+        then
+            skupaj=$((skupaj + $i ))
+        fi
     done
     echo $skupaj
 

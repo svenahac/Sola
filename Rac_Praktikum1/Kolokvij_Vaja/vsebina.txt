@@ -1,0 +1,10 @@
+total 36
+drwxr-xr-x 2 vexane vexane 4096 okt  8 21:55 Desktop
+drwxr-xr-x 5 vexane vexane 4096 okt 25 11:42 Documents
+drwxr-xr-x 2 vexane vexane 4096 nov 12 10:19 Downloads
+drwxr-xr-x 2 vexane vexane 4096 okt  8 21:55 Music
+drwxr-xr-x 2 vexane vexane 4096 okt  9 01:44 Pictures
+drwxr-xr-x 2 vexane vexane 4096 okt  8 21:55 Public
+drwx------ 3 vexane vexane 4096 okt  9 01:35 snap
+drwxr-xr-x 2 vexane vexane 4096 okt  8 21:55 Templates
+drwxr-xr-x 2 vexane vexane 4096 okt  8 21:55 Videos
