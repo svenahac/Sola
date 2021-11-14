@@ -1,6 +1,25 @@
 import java.util.*;
 
 public class VDn {
+    public static void kolikoPalindromov(int[] tab) {
+        int counter = 0;
+        for (int i = 0; i < tab.length; i++) {
+            if (palindrom(tab[i])) {
+                counter++;
+            }
+        }
+        System.out.println("Število palindromov je: " + counter);
+    }
+    public static boolean palindrom(int stevilo) {
+        String a = Integer.toString(stevilo);
+        StringBuilder ss = new StringBuilder(a);
+        String tmp = ss.reverse().toString();
+        if(tmp.contentEquals(a)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     public static void vsota(int[] tab) {
         int vsota = 0;
         for (int i = 0; i < tab.length; i++) {
@@ -117,6 +136,8 @@ public class VDn {
             mediana(sortirana);
             // vsota vseh števil
             vsota(tab_stevil);
+            // koliko palindromov
+            kolikoPalindromov(tab_stevil);
         }
     }
 }

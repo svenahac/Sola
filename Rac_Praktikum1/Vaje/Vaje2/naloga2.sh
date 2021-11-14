@@ -31,16 +31,20 @@ zmnozek () {
     done
     echo $rezultat
 }
-
-if [ $operacija == '+' ]
+if [ $# -lt 10 ]
 then
-    vsota $stevila
-elif [ $operacija == '-' ]
-then
-    razlika $stevila
-elif [ $operacija == 'X' ]
-then
-    zmnozek $stevila
-else 
-    echo Napačna operacija
+    if [ $operacija == '+' ]
+    then
+        vsota $stevila
+    elif [ $operacija == '-' ]
+    then
+        razlika $stevila
+    elif [ $operacija == 'X' ]
+    then
+        zmnozek $stevila
+    else 
+        echo Napačna operacija
+    fi
+else
+    echo "Podanih je preveč argumentov."
 fi
