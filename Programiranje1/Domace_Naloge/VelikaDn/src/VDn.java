@@ -1,6 +1,47 @@
 import java.util.*;
 
 public class VDn {
+    public static void rikverc (int[] tab) {
+        for (int i = tab.length-1; i >= 0 ; i--) {
+            if (i != 0) {
+                System.out.print(tab[i] + ", ");
+            } else {
+                System.out.print(tab[i]);
+            }
+        }
+    }
+    public static void najPalindrom(int[] tab) {
+        int counter = 0;
+        for (int i = 0; i < tab.length; i++) {
+            if (palindrom(tab[i])) {
+                counter++;
+            }
+        }
+        int[] tabPalindromov = new int[counter];
+        int cnt = 0;
+        for (int i = 0; i < tab.length; i++) {
+            if (palindrom(tab[i])) {
+                tabPalindromov[cnt] = tab[i];
+                cnt++;
+            }
+        }
+        cnt--;
+        if ( cnt < 0) {
+            System.out.println("V tabeli nimamo palindromov, saj imamo samo negativna števila");
+        } else if (tabPalindromov[cnt] == 0) {
+            System.out.println("Drugo največje palindromo število: Ne obstaja, saj je 0 najmanjše");
+        } else {
+            int max = tabPalindromov[cnt] - 1;
+            while (true) {
+                if (palindrom(max)) {
+                    System.out.println("Drugo največje palindromo število : " + max);
+                    break;
+                } else {
+                    max--;
+                }
+            }
+        }
+    }
     public static void kolikoPalindromov(int[] tab) {
         int counter = 0;
         for (int i = 0; i < tab.length; i++) {
@@ -127,7 +168,11 @@ public class VDn {
             // največje število
             System.out.println("Največje število je: " + sortirana[sortirana.length-1]);
             // drugo najmanjšo vrednost števil
-            System.out.println("Druga najmanjša vrednost števil je: " + sortirana[1]);
+            if (sortirana.length <= 1){
+                System.out.println("Druga najmanjša vrednost števil je: " + sortirana[0]);
+            } else {
+                System.out.println("Druga najmanjša vrednost števil je: " + sortirana[1]);
+            }
             // povprečje vseh števil
             System.out.println("Povprečje je: " + povprecje(tab_stevil));
             // standardni odklon
@@ -138,6 +183,10 @@ public class VDn {
             vsota(tab_stevil);
             // koliko palindromov
             kolikoPalindromov(tab_stevil);
+            // Največji palindrom
+            najPalindrom(sortirana);
+            // Obratno izpisana števila
+            rikverc(tab_stevil);
         }
     }
 }
