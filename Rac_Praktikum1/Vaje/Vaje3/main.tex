@@ -1,0 +1,102 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+
+\title{Prvi skok v LaTeX}
+\author{Vida Groznik}
+\date{18. november 2021}
+
+\begin{document}
+
+\maketitle
+\newpage
+
+\tableofcontents
+\listoftables
+\listoffigures
+
+\newpage
+
+\section{Uvod}
+Tole je besedilo, ki je del našega novega dokumenta. Besedilo lahko razdelimo na poglavja in podpoglavja, lahko ga oblikujemo, vstavljamo slike in tabele, lahko uporabljamo reference itd.
+
+Besedilo lahko razdelimo tudi na odstavke.
+
+\paragraph{Hipoteza 1:} Vsi ljudje znamo brati in pisati. 
+
+\subparagraph{Podhipoteza 1.1} tole je nadaljevanje prejšnje hipoteze.
+
+\section{Matematični izrazi}
+Za pisanje matematičnih izrazov lahko uporabljamo različna okolja.....
+\subsection{Uporaba okolja equation}
+\subsubsection{Številčenje}
+\begin{equation}
+    f(x) = x^2
+\end{equation}
+
+\subsubsection{Brez številčenja}
+\begin{equation*}
+    g(x) = 3x^3 + x + 12
+\end{equation*}
+
+\subsection{Uporaba okolja align}
+\begin{align*}
+    1 + 2 &= 3 \\
+    y &= 3x^3 - x3^2 +11x + 2 \\
+    f(x) &= \frac{1}{x} \\
+    g(x) &= \int^b_a \frac{1}{4}x^2 \\
+    F(x) &= \sqrt{x}
+\end{align*}
+
+\subsection{Uporaba okolja matrix}
+
+$
+\left(
+\begin{matrix}
+1 & 1 & 0 \\
+0 & 1 & 1 \\
+0 & 0 & 1
+\end{matrix}
+\right)
+$
+
+\subsection{Funkcija v besedilu}
+Matematični izraz lahko napišemo tudi v vrstici z besedilom $y = k*x + n$.
+
+\section{Fotografije}
+Na sliki \ref{fig:nemo} je predstavljen primerek te vrste.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{nemo.jpg}
+    \caption{Riba Nemo.}
+    \label{fig:nemo}
+\end{figure}
+
+\section{Tabele}
+\label{sec:Tabela}
+V tabeli \ref{tab:predavatelji} je sezam predavateljev.
+
+\begin{table}[]
+    \centering
+    \begin{tabular}{l l|c}
+        \hline
+        \textbf{Ime} & \textbf{Priimek} & \textbf{Kabinet}\\
+        \hline \hline
+        Vida & Groznik & K1.03 \\
+        Nino & Bašić & K1.09 \\
+        Matjaž & Krnc & K1.08 \\
+        \hline
+    \end{tabular}
+    \caption{Seznam predavateljev}
+    \label{tab:predavatelji}
+\end{table}
+
+\section{Oblikovanje besedila}
+\textbf{Na Slovaškem} \underline{od danes velja zaprtje javnega življenja} \textit{za necepljene.} Pravilo PC (preboleli in cepljeni proti covidu-19) velja za hotele, gostinske lokale in prireditve. Pogoj PC je za hotele, gostinske lokale, storitve in prireditve od danes v veljavi tudi na Češkem. \textsc{Poleg tega naj bi v podjetjih znova uveljavili hitro testiranje na okužbo z virusom SARS-CoV-2.}
+\subsection{Blablabla}
+\texttt{Na Slovaškem od danes velja zaprtje javnega življenja za necepljene.} \textsf{Pravilo PC (preboleli in cepljeni proti covidu-19)} velja za hotele, gostinske lokale in prireditve. Pogoj PC je za hotele, gostinske lokale, storitve in prireditve od danes v veljavi tudi na Češkem. Poleg tega naj bi v podjetjih znova uveljavili hitro testiranje na okužbo z virusom SARS-CoV-2.
+\subsection{Blablabla verzija 2}
+Na Slovaškem od danes velja zaprtje javnega življenja za necepljene. Pravilo PC (preboleli in cepljeni proti covidu-19) velja za hotele, gostinske lokale in prireditve. Pogoj PC je za hotele, gostinske lokale, storitve in prireditve od danes v veljavi tudi na Češkem. Poleg tega naj bi v podjetjih znova uveljavili hitro testiranje na okužbo z virusom SARS-CoV-2.
+\end{document}

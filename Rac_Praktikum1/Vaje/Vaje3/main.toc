@@ -1,0 +1,15 @@
+\contentsline {section}{\numberline {1}Uvod}{3}
+\contentsline {paragraph}{Hipoteza 1:}{3}
+\contentsline {subparagraph}{Podhipoteza 1.1}{3}
+\contentsline {section}{\numberline {2}Matemati\IeC {\v c}ni izrazi}{3}
+\contentsline {subsection}{\numberline {2.1}Uporaba okolja equation}{3}
+\contentsline {subsubsection}{\numberline {2.1.1}\IeC {\v S}tevil\IeC {\v c}enje}{3}
+\contentsline {subsubsection}{\numberline {2.1.2}Brez \IeC {\v s}tevil\IeC {\v c}enja}{3}
+\contentsline {subsection}{\numberline {2.2}Uporaba okolja align}{3}
+\contentsline {subsection}{\numberline {2.3}Uporaba okolja matrix}{3}
+\contentsline {subsection}{\numberline {2.4}Funkcija v besedilu}{3}
+\contentsline {section}{\numberline {3}Fotografije}{4}
+\contentsline {section}{\numberline {4}Tabele}{4}
+\contentsline {section}{\numberline {5}Oblikovanje besedila}{4}
+\contentsline {subsection}{\numberline {5.1}Blablabla}{5}
+\contentsline {subsection}{\numberline {5.2}Blablabla verzija 2}{5}
