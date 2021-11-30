@@ -28,11 +28,7 @@ public class VDn {
             // največje število
             System.out.println("Največje število je: " + sortirana[sortirana.length-1]);
             // drugo najmanjšo vrednost števil
-            if (sortirana.length <= 1){
-                System.out.println("Druga najmanjša vrednost števil je: " + sortirana[0]);
-            } else {
-                System.out.println("Druga najmanjša vrednost števil je: " + sortirana[1]);
-            }
+            Helper.drugaNaj(sortirana);
             // povprečje vseh števil
             System.out.println("Povprečje je: " + Helper.povprecje(tab_stevil));
             // standardni odklon

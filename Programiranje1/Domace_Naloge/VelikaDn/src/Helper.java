@@ -138,7 +138,19 @@ public class Helper {
         System.out.println("Število sodih: " + counter);
         System.out.println("Število lihih: " + liha);
     }
-    public static void stRazlicnih(int[] tab) {
+    public static void drugaNaj(int[] tab) {
+        int counter = 1;
+        int drugoNaj = tab[0];
+        for (int i = 1; i < tab.length; i++) {
+            if (tab[i - 1] != tab[i]) { // Pogleda sosednja elementa v urejeni tabeli in pove, če sta rezlična
+                drugoNaj = tab[i]; // Nasli smo drugo najvecje stevilo
+                break;
+            }
+        }
+        System.out.println("Drugo najmanjše število je: " + drugoNaj);
+    }
+
+        public static void stRazlicnih(int[] tab) {
         int counter = 1;
         for (int i = 1; i < tab.length; i++) {
             if (tab[i-1] != tab[i]) { // Pogleda sosednja elementa v urejeni tabeli in pove, če sta rezlična
