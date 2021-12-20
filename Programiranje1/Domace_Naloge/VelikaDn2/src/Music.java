@@ -20,12 +20,8 @@ public class Music {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
             Clip clip = AudioSystem.getClip();
             clip.open(audioIn);
-            clip.start();
-        } catch (UnsupportedAudioFileException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (LineUnavailableException e) {
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
