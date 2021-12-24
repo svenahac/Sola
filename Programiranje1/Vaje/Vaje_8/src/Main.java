@@ -22,7 +22,7 @@ public class Main {
               }
               g.setColor(new Color(0xB43C32));
               g.setFont(new Font("Herculanum", Font.BOLD, 38));
-              g.drawString("Happy New Year", 240, 200);
+              //g.drawString("Happy New Year", 240, 200);
               try {
                   Thread.sleep(23);
               } catch (InterruptedException e) {

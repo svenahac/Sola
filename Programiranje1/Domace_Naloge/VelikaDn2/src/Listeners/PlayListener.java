@@ -2,9 +2,9 @@ package Listeners;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import Main.*;
+import Screens.*;
 
-import static Main.StartScreen.startScreen;
+import static Screens.StartScreen.startScreen;
 
 public class PlayListener implements ActionListener {
     @Override

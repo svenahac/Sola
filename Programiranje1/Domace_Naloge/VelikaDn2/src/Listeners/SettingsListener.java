@@ -2,7 +2,7 @@ package Listeners;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import Main.*;
+import Screens.*;
 
 public class SettingsListener implements ActionListener {
     @Override
