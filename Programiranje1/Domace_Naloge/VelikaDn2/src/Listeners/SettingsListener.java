@@ -1,7 +1,10 @@
+package Listeners;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import Main.*;
 
-public class SettingsListener extends StartScreen implements ActionListener {
+public class SettingsListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         new SettingsScreen();

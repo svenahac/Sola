@@ -1,10 +1,15 @@
+package Main;
+
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import Listeners.*;
+
+import static Main.StartScreen.startScreen;
 
 public class SettingsScreen extends JFrame {
+    
     public static JFrame setScreen;
-    SettingsScreen(){
+
+    public SettingsScreen(){
         setScreen = this;
         this.setSize(700, 500);
         this.setDefaultCloseOperation(HIDE_ON_CLOSE);
@@ -13,8 +18,13 @@ public class SettingsScreen extends JFrame {
         // Sets an icon for the frame
         ImageIcon ico = new ImageIcon(getClass().getResource("/Images/settings.png"));
         this.setIconImage(ico.getImage());
-
-        ImageIcon bg = new ImageIcon(getClass().getResource("/Images/wp2.gif"));
+        String image;
+        if (startScreen.isVisible()) {
+            image = "/Images/wp2.gif";
+        } else {
+            image = "/Images/wallpaper2.gif";
+        }
+        ImageIcon bg = new ImageIcon(getClass().getResource(image));
         JLabel bgLabel = new JLabel(bg);
 
         JButton close = new JButton("Close");
@@ -27,11 +37,5 @@ public class SettingsScreen extends JFrame {
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
-    public class CloseListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            setScreen.setVisible(false);
 
-        }
-    }
 }
