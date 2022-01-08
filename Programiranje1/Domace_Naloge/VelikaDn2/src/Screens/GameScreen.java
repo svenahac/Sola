@@ -2,6 +2,7 @@ package Screens;
 
 import javax.swing.*;
 import java.awt.*;
+
 import Listeners.*;
 
 public class GameScreen extends JFrame {
@@ -34,6 +35,7 @@ public class GameScreen extends JFrame {
             for (int j = 0; j < 9; j++) {
                 JButton b = new JButton();
                 b.setBackground(Color.WHITE);
+                b.addActionListener(new GameButton());
                 gameBoard.add(b);
             }
         }
@@ -50,4 +52,5 @@ public class GameScreen extends JFrame {
         b.setBackground(new Color(191,76,191));
         b.setFocusable(false);
     }
+
 }
