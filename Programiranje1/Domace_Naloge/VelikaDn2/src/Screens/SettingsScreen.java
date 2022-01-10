@@ -16,13 +16,13 @@ public class SettingsScreen extends JFrame {
         this.setResizable(false);
         this.setTitle("Settings");
         // Sets an icon for the frame
-        ImageIcon ico = new ImageIcon(getClass().getResource("/Images/settings.png"));
+        ImageIcon ico = new ImageIcon(getClass().getResource("/Content/settings.png"));
         this.setIconImage(ico.getImage());
         String image;
         if (startScreen.isVisible()) {
-            image = "/Images/wp2.gif";
+            image = "/Content/wp2.gif";
         } else {
-            image = "/Images/wallpaper2.gif";
+            image = "/Content/wallpaper2.gif";
         }
         ImageIcon bg = new ImageIcon(getClass().getResource(image));
         JLabel bgLabel = new JLabel(bg);

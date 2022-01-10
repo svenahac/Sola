@@ -11,14 +11,14 @@ public class StartScreen extends JFrame {
         startScreen = this;
         this.setSize(800, 600);
         this.setResizable(false);
-        this.setTitle("Game");
+        this.setTitle("Word Search");
         this.setDefaultCloseOperation(3);
         // Sets an icon for the frame
-        ImageIcon ico = new ImageIcon(getClass().getResource("/Images/heart.png"));
+        ImageIcon ico = new ImageIcon(getClass().getResource("/Content/heart.png"));
         this.setIconImage(ico.getImage());
         //----------------------------------------------------------------//
         // Background
-        ImageIcon bg = new ImageIcon(getClass().getResource("/Images/wp2.gif"));
+        ImageIcon bg = new ImageIcon(getClass().getResource("/Content/wp2.gif"));
         JLabel bgLabel = new JLabel(bg);
 
         //----------------------------------------------------------------//

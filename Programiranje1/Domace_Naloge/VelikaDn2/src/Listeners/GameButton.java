@@ -1,5 +1,7 @@
 package Listeners;
 
+import Screens.GameScreen;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,5 +13,8 @@ public class GameButton implements ActionListener {
         JButton clicked = (JButton) e.getSource();
         clicked.setBackground(Color.BLACK);
         clicked.setEnabled(false);
+        String letter = clicked.getText();
+        System.out.println(letter);
+        GameScreen.word.append(letter);
     }
 }
