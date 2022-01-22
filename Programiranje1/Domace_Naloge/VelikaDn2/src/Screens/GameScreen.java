@@ -8,9 +8,17 @@ import java.util.*;
 
 import Listeners.*;
 
+import static Screens.SettingsScreen.colSlider;
+import static Screens.SettingsScreen.rowSlider;
+
 public class GameScreen extends JFrame {
     public static JTextArea word;
+    public static ArrayList<String> dictionary;
+    public static JLabel displayPoints;
+    public static JFrame gameScreen;
+
     public GameScreen() {
+        gameScreen = this;
         this.setSize(1300, 700);
         this.setDefaultCloseOperation(3);
         this.setResizable(false);
@@ -24,34 +32,26 @@ public class GameScreen extends JFrame {
         gameBoard.setSize(1000, 600);
         gameBoard.setBackground(new Color(0, 0, 0, 200));
         gameBoard.setLocation(5, 5);
-
+        // New Game
+        JButton newGame = new JButton("New Game");
+        ButtonSettings(newGame);
+        newGame.setLocation(1045, 413);
+        newGame.addActionListener(new NewGameListener());
+        // Settings
         JButton settings = new JButton("Settings");
         ButtonSettings(settings);
         settings.setLocation(1045, 478);
         settings.addActionListener(new SettingsListener());
-        //Exit
+        // Exit
         JButton exit = new JButton("Exit");
         ButtonSettings(exit);
         exit.setLocation(1045, 543);
         exit.addActionListener(new ExitListener());
 
-        int rows = 9;
-        int col = 9;
+        int rows = rowSlider.getValue();
+        int col = colSlider.getValue();
 
-        gameBoard.setLayout(new GridLayout(rows, col));
 
-        Random random = new Random();
-        String abeceda = "ABCDEFGHIJKLMNOPRSTUVZQWY";
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < col; j++) {
-                int randChar = random.nextInt(abeceda.length());
-                JButton b = new JButton("" + abeceda.charAt(randChar));
-                b.setFocusable(false);
-                b.setBackground(Color.WHITE);
-                b.addActionListener(new GameButton());
-                gameBoard.add(b);
-            }
-        }
 
         JTextArea word = new JTextArea("");
         word.setSize(200, 50);
@@ -60,7 +60,32 @@ public class GameScreen extends JFrame {
         word.setFont(word.getFont().deriveFont(20f));
         this.word= word;
 
-        word.getText();
+        gameBoard.setLayout(new GridLayout(rows, col));
+        Random random = new Random();
+
+        int randI = random.nextInt(rows);
+        int randJ = random.nextInt(col);
+
+
+        String abeceda = "ABCDEFGHIJKLMNOPRSTUVZQWY";
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < col; j++) {
+                int randChar = random.nextInt(abeceda.length());
+                JButton b = new JButton("" + abeceda.charAt(randChar));
+                b.setFocusable(false);
+                b.setBackground(Color.WHITE);
+                //b.setFont(b.getFont().deriveFont(20f));
+                b.addActionListener(new GameButton());
+
+                if (i == randI && j == randJ){
+                    ClickButton(b);
+                }
+                //Rules.availableMoves(rows,col,i,j,b);
+
+                gameBoard.add(b);
+            }
+        }
+
 
         JButton check = new JButton("Check");
         check.setSize(200, 50);
@@ -82,16 +107,50 @@ public class GameScreen extends JFrame {
         } catch (FileNotFoundException e){
             e.printStackTrace();
         }
+        this.dictionary=dictionary;
+
+        JLabel points = new JLabel("Points", SwingConstants.CENTER);
+        points.setSize(200,20);
+        points.setLocation(1045,5);
+        points.setFont(points.getFont().deriveFont(25f));
+        points.setForeground(Color.WHITE);
+
+        JTextArea displayP = new JTextArea();
+        displayP.setSize(200,60);
+        displayP.setLocation(1045,30);
+        displayP.setBackground(Color.WHITE);
+
+        JLabel displayPoints = new JLabel("0",SwingConstants.CENTER);
+        displayPoints.setFont(displayPoints.getFont().deriveFont(25f));
+        displayPoints.setSize(200,60);
+        displayPoints.setLocation(1045,30);
+        displayPoints.setBackground(Color.BLACK);
+        this.displayPoints = displayPoints;
+
+        bgLabel.add(points);
+        bgLabel.add(displayPoints);
+        bgLabel.add(displayP);
 
         bgLabel.add(check);
         bgLabel.add(word);
+        bgLabel.add(newGame);
         bgLabel.add(settings);
         bgLabel.add(exit);
         bgLabel.add(gameBoard);
+
+
         this.add(bgLabel);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
+
+    private void ClickButton(JButton b) {
+        b.setBackground(Color.BLACK);
+        b.setEnabled(false);
+        String letter = b.getText();
+        word.append(letter);
+    }
+
     public void ButtonSettings(JButton b){
         b.setSize(200, 60);
         b.setBackground(new Color(191,76,191));
