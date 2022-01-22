@@ -57,8 +57,8 @@ public class GameScreen extends JFrame {
         exit.setLocation(1045, 543);
         exit.addActionListener(new ExitListener() );
 
-        int rows = rowSlider.getValue();
-        int col = colSlider.getValue();
+        int rows = fieldSlider.getValue();
+        int col = fieldSlider.getValue();
         this.rows = rows;
         this.col = col;
 
@@ -82,11 +82,10 @@ public class GameScreen extends JFrame {
         this.clickedArray = clickedArray;
 
         JButton[][] buttons = new JButton[rows][col];
-        String abeceda = "ABCDEFGHIJKLMNOPRSTUVZQWY";
+
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < col; j++) {
-                int randChar = random.nextInt(abeceda.length());
-                JButton b = new JButton("" + abeceda.charAt(randChar));
+                JButton b = new JButton("" + BetterAlphabet.randomChar());
                 b.setFocusable(false);
                 b.setBackground(Color.WHITE);
                 b.addActionListener(new GameButton());

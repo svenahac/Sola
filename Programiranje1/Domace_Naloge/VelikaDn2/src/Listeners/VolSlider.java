@@ -20,7 +20,7 @@ public class VolSlider implements ChangeListener {
         } else if (volume > 50) {
             soundVolume = (float) (- 20 + (volume-50)*0.4);
         }
-        System.out.println(soundVolume);
+
         control.setValue(soundVolume);
     }
 }

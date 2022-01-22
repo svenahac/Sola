@@ -1,6 +1,5 @@
 package Listeners;
 
-import Screens.GameScreen;
 import Screens.Rules;
 
 import javax.swing.*;
@@ -16,7 +15,6 @@ public class CheckListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String checkedWord = word.getText();
-        System.out.println(checkedWord);
 
         if(checkedWord.length() <= 2){
             JOptionPane.showMessageDialog(null, "The Word needs to be longer than 2.");
@@ -29,12 +27,9 @@ public class CheckListener implements ActionListener {
                 }
             }
             if (flag == 1){
-                System.out.println("Found it!");
                 int current = Integer.parseInt(displayPoints.getText());
                 int next = current + (int)(Math.pow(2,checkedWord.length()));
                 displayPoints.setText(String.valueOf(next));
-            } else {
-                System.out.println("Wrong word!");
             }
             Random rand = new Random();
             int r = rand.nextInt(rows);

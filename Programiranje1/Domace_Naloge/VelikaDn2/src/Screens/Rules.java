@@ -8,7 +8,7 @@ import static Screens.GameScreen.*;
 public class Rules {
 
     public static void availableMoves(int i, int j, JButton[][] buttons){
-        System.out.println(rows + " " + col);
+
 
         if (i == 0 && j == 0) { // Top left corner
 
@@ -18,37 +18,37 @@ public class Rules {
 
         } else if(i == col-1 && j == 0) { // Bottom left corner
 
-            makeClickable(buttons[i - 1][j], i - 1, j); // Row 1, Col 2
-            makeClickable(buttons[i - 1][j + 1], i - 1, j + 1); // Row 1, Col 3
-            makeClickable(buttons[i][j + 1], i, j + 1); // Row 2, Col 3
+            makeClickable(buttons[i-1][j], i-1, j); // Row 1, Col 2
+            makeClickable(buttons[i-1][j+1], i-1, j+1); // Row 1, Col 3
+            makeClickable(buttons[i][j+1], i, j+1); // Row 2, Col 3
 
         } else if (i == 0 && j == rows-1) { // Top right corner
 
-            makeClickable(buttons[i][j - 1], i, j - 1); // Row 2, Col 1
-            makeClickable(buttons[i + 1][j - 1], i + 1, j - 1); // Row 3, Col 1
-            makeClickable(buttons[i + 1][j], i + 1, j); // Row 3, Col 2
+            makeClickable(buttons[i][j-1], i, j-1); // Row 2, Col 1
+            makeClickable(buttons[i+1][j-1], i+1, j-1); // Row 3, Col 1
+            makeClickable(buttons[i+1][j], i+1, j); // Row 3, Col 2
 
         } else if (i == col-1 && j == rows-1) { // Bottom right corner
 
-            makeClickable(buttons[i - 1][j - 1], i - 1, j - 1); // Row 1, Col 1
-            makeClickable(buttons[i - 1][j], i - 1, j); // Row 1, Col 2
-            makeClickable(buttons[i][j - 1], i, j - 1); // Row 2, Col 1
+            makeClickable(buttons[i-1][j-1], i-1, j-1); // Row 1, Col 1
+            makeClickable(buttons[i-1][j], i-1, j); // Row 1, Col 2
+            makeClickable(buttons[i][j-1], i, j-1); // Row 2, Col 1
 
         } else if (i == 0 && j < rows-1 && j > 0) { // Top side
 
-            makeClickable(buttons[i][j - 1], i, j - 1); // Row 2, Col 1
-            makeClickable(buttons[i][j + 1], i, j + 1); // Row 2, Col 3
-            makeClickable(buttons[i + 1][j - 1], i + 1, j - 1); // Row 3, Col 1
-            makeClickable(buttons[i + 1][j], i + 1, j); // Row 3, Col 2
-            makeClickable(buttons[i + 1][j + 1], i + 1, j + 1); // Row 3, Col 3
+            makeClickable(buttons[i][j-1], i, j-1); // Row 2, Col 1
+            makeClickable(buttons[i][j+1], i, j+1); // Row 2, Col 3
+            makeClickable(buttons[i+1][j-1], i+1, j-1); // Row 3, Col 1
+            makeClickable(buttons[i+1][j], i+1, j); // Row 3, Col 2
+            makeClickable(buttons[i+1][j+1], i+1, j+1); // Row 3, Col 3
 
         } else if (i == col-1 && j < rows-1 && j > 0) { // Bottom side
 
-            makeClickable(buttons[i - 1][j - 1], i - 1, j - 1); // Row 1, Col 1
-            makeClickable(buttons[i - 1][j], i - 1, j); // Row 1, Col 2
-            makeClickable(buttons[i - 1][j + 1], i - 1, j + 1); // Row 1, Col 3
-            makeClickable(buttons[i][j - 1], i, j - 1); // Row 2, Col 1
-            makeClickable(buttons[i][j + 1], i, j + 1); // Row 2, Col 3
+            makeClickable(buttons[i-1][j-1], i-1, j-1); // Row 1, Col 1
+            makeClickable(buttons[i-1][j], i-1, j); // Row 1, Col 2
+            makeClickable(buttons[i-1][j+1], i-1, j+1); // Row 1, Col 3
+            makeClickable(buttons[i][j-1], i, j-1); // Row 2, Col 1
+            makeClickable(buttons[i][j+1], i, j+1); // Row 2, Col 3
 
         } else  if (j == 0 && i < col-1 && i > 0) { // Left Side
 

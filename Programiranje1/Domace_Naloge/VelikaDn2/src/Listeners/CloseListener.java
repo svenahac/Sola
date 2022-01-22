@@ -10,5 +10,6 @@ public class CloseListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         setScreen.setVisible(false);
+
     }
 }
