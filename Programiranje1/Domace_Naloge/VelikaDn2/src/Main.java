@@ -9,6 +9,7 @@ public class Main {
         new StartScreen();
         new SettingsScreen();
         new Music();
+        new EndScreen();
         
     }
 }

@@ -33,6 +33,7 @@ public class SettingsScreen extends JFrame {
         ImageIcon bg = new ImageIcon(getClass().getResource(image));
         JLabel bgLabel = new JLabel(bg);
 
+        //Close button
         JButton close = new JButton("Close");
         ButtonSettings(close);
         close.setLocation(550, 400);

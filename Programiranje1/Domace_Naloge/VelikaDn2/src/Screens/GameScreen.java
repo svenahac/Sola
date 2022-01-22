@@ -8,14 +8,17 @@ import java.util.*;
 
 import Listeners.*;
 
-import static Screens.SettingsScreen.colSlider;
-import static Screens.SettingsScreen.rowSlider;
+import static Screens.SettingsScreen.*;
 
 public class GameScreen extends JFrame {
     public static JTextArea word;
     public static ArrayList<String> dictionary;
     public static JLabel displayPoints;
     public static JFrame gameScreen;
+    public static boolean[][] clickedArray;
+    public static int rows;
+    public static int col;
+    public static JButton[][] buttons;
 
     public GameScreen() {
         gameScreen = this;
@@ -28,6 +31,7 @@ public class GameScreen extends JFrame {
         ImageIcon bg = new ImageIcon(getClass().getResource("/Content/wallpaper2.gif"));
         JLabel bgLabel = new JLabel(bg);
 
+        // Gameboard
         JPanel gameBoard = new JPanel();
         gameBoard.setSize(1000, 600);
         gameBoard.setBackground(new Color(0, 0, 0, 200));
@@ -35,8 +39,13 @@ public class GameScreen extends JFrame {
         // New Game
         JButton newGame = new JButton("New Game");
         ButtonSettings(newGame);
-        newGame.setLocation(1045, 413);
+        newGame.setLocation(1045, 348);
         newGame.addActionListener(new NewGameListener());
+        // End Game
+        JButton endGame = new JButton("End Game");
+        ButtonSettings(endGame);
+        endGame.setLocation(1045, 413);
+        endGame.addActionListener(new EndListener());
         // Settings
         JButton settings = new JButton("Settings");
         ButtonSettings(settings);
@@ -46,10 +55,12 @@ public class GameScreen extends JFrame {
         JButton exit = new JButton("Exit");
         ButtonSettings(exit);
         exit.setLocation(1045, 543);
-        exit.addActionListener(new ExitListener());
+        exit.addActionListener(new ExitListener() );
 
         int rows = rowSlider.getValue();
         int col = colSlider.getValue();
+        this.rows = rows;
+        this.col = col;
 
 
 
@@ -66,7 +77,11 @@ public class GameScreen extends JFrame {
         int randI = random.nextInt(rows);
         int randJ = random.nextInt(col);
 
+        boolean[][] clickedArray = new boolean[rows][col];
 
+        this.clickedArray = clickedArray;
+
+        JButton[][] buttons = new JButton[rows][col];
         String abeceda = "ABCDEFGHIJKLMNOPRSTUVZQWY";
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < col; j++) {
@@ -74,17 +89,17 @@ public class GameScreen extends JFrame {
                 JButton b = new JButton("" + abeceda.charAt(randChar));
                 b.setFocusable(false);
                 b.setBackground(Color.WHITE);
-                //b.setFont(b.getFont().deriveFont(20f));
                 b.addActionListener(new GameButton());
-
-                if (i == randI && j == randJ){
-                    ClickButton(b);
-                }
-                //Rules.availableMoves(rows,col,i,j,b);
+                b.setEnabled(false);
+                buttons[i][j] = b;
 
                 gameBoard.add(b);
             }
         }
+        this.buttons = buttons;
+        ClickButton(buttons[randI][randJ]);
+        clickedArray[randI][randJ] = true;
+        Rules.availableMoves(randI,randJ,buttons);
 
 
         JButton check = new JButton("Check");
@@ -134,6 +149,7 @@ public class GameScreen extends JFrame {
         bgLabel.add(check);
         bgLabel.add(word);
         bgLabel.add(newGame);
+        bgLabel.add(endGame);
         bgLabel.add(settings);
         bgLabel.add(exit);
         bgLabel.add(gameBoard);
@@ -155,6 +171,10 @@ public class GameScreen extends JFrame {
         b.setSize(200, 60);
         b.setBackground(new Color(191,76,191));
         b.setFocusable(false);
+    }
+
+    public boolean isClicked(){
+        return true;
     }
 
 }

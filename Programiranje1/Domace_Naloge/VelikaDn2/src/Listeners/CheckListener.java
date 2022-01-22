@@ -1,12 +1,16 @@
 package Listeners;
 
+import Screens.GameScreen;
+import Screens.Rules;
+
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Random;
 
-import static Screens.GameScreen.dictionary;
-import static Screens.GameScreen.word;
-import static Screens.GameScreen.displayPoints;
+import static Screens.GameScreen.*;
+import static Screens.GameScreen.buttons;
 
 public class CheckListener implements ActionListener {
     @Override
@@ -32,6 +36,25 @@ public class CheckListener implements ActionListener {
             } else {
                 System.out.println("Wrong word!");
             }
+            Random rand = new Random();
+            int r = rand.nextInt(rows);
+            int c = rand.nextInt(col);
+            while (true){
+                if (!clickedArray[r][c]){
+                    clickedArray[r][c] = true;
+                    Rules.clear(buttons);
+                    Rules.availableMoves(r,c,buttons);
+                    buttons[r][c].setBackground(Color.BLACK);
+                    buttons[r][c].setEnabled(false);
+                    String letter = buttons[r][c].getText();
+                    word.append(letter);
+                    break;
+                } else {
+                    r = rand.nextInt(rows);
+                    c = rand.nextInt(col);
+                }
+            }
+
         }
 
     }
