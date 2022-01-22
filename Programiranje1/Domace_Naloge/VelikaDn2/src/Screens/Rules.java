@@ -8,6 +8,7 @@ import static Screens.GameScreen.*;
 public class Rules {
 
     public static void availableMoves(int i, int j, JButton[][] buttons){
+        System.out.println(rows + " " + col);
 
         if (i == 0 && j == 0) { // Top left corner
 
@@ -41,7 +42,7 @@ public class Rules {
             makeClickable(buttons[i + 1][j], i + 1, j); // Row 3, Col 2
             makeClickable(buttons[i + 1][j + 1], i + 1, j + 1); // Row 3, Col 3
 
-        }else if (i == col-1 && j < rows-1 && j > 0) { // Bottom side
+        } else if (i == col-1 && j < rows-1 && j > 0) { // Bottom side
 
             makeClickable(buttons[i - 1][j - 1], i - 1, j - 1); // Row 1, Col 1
             makeClickable(buttons[i - 1][j], i - 1, j); // Row 1, Col 2

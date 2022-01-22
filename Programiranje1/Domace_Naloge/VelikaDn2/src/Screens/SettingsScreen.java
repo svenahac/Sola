@@ -14,6 +14,7 @@ public class SettingsScreen extends JFrame {
     public static JLabel colLabel;
     public static JSlider volSlider;
     public static JLabel volLabel;
+    public static String image;
 
     public SettingsScreen(){
         setScreen = this;

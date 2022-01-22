@@ -23,6 +23,9 @@ public class GameButton implements ActionListener {
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < col; j++) {
+                System.out.println("Rows: " + rows);
+                System.out.println("Col: " + col);
+                System.out.println("I & J: " + i + " " + j);
                 if(e.getSource() == buttons[i][j]){
                     clickedArray[i][j] = true;
                     Rules.clear(buttons);
