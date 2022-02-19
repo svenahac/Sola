@@ -8,6 +8,6 @@ import static Screens.SettingsScreen.fieldSlider;
 public class RowSlider implements javax.swing.event.ChangeListener {
     @Override
     public void stateChanged(ChangeEvent e) {
-        fieldLabel.setText("Value: " + fieldSlider.getValue());
+        fieldLabel.setText(fieldSlider.getValue() + "x" + fieldSlider.getValue());
     }
 }

@@ -4,11 +4,11 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import static Screens.SettingsScreen.colLabel;
-import static Screens.SettingsScreen.colSlider;
+import static Screens.SettingsScreen.fieldSlider;
 
 public class ColSlider implements ChangeListener {
     @Override
     public void stateChanged(ChangeEvent e) {
-        colLabel.setText("Value: " + colSlider.getValue());
+        colLabel.setText(fieldSlider.getValue() + "x" + fieldSlider.getValue());
     }
 }

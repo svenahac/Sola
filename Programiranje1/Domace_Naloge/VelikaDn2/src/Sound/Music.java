@@ -6,7 +6,7 @@ import java.io.File;
 public class Music {
     public static FloatControl control;
     public Music() {
-
+        // Koda sposojena iz stack overflowa
         try {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(new File("./src/Sound/theme.wav").getAbsoluteFile());
             Clip clip = AudioSystem.getClip();
