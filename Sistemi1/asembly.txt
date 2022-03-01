@@ -1,0 +1,29 @@
+MOVB AL, 120 ; AL <- 120
+MOVB BL, 180 ; BL <- 180
+
+; 8-bitno seštevanje
+; ADDB AL, BL ; AL <- AL + BL
+; HLT
+
+; 16-bitno seštevanje
+ADD A, B ; A <- A + B
+HLT
+
+-------------------------------------------------------
+MOVB AH, 5 ; X = 5
+MOVB AL, 7 ; Y = 7
+
+; 8-bitna verzija
+; MOVB BL, AL
+; MOVB BH, 0
+; MOVB AL, AH
+; MOVB AH, 0
+; HLT
+
+; 16-bitna verzija
+MOV B, A
+AND B, 0x00ff ; je enako 0000000011111111
+SHR A, 8
+HLT
+-------------------------------------------------------
+
