@@ -1,0 +1,54 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+.podnaslov {
+  font-size: 24px;
+  text-align: center;
+}
+
+.naslov {
+  text-align: center;
+  font-size: 36px;
+}
+
+.besedilo {
+  text-align: center;
+}
+
+a {
+  color: blue;
+  text-decoration: none;
+}
+
+footer {
+  text-align: center;
+}
+
+#zanimanje {
+  background-color: black;
+  color: white;
+}
+
+#zanimanje a {
+  color: red;
+}
+
+#glasba {
+  background-color: aqua;
+}
+
+figcaption {
+  color: gray;
+  text-align: center;
+}
+
+.slika {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 80vw;
+}
+
+#glasba a {
+  color: black;
+}
