@@ -25,5 +25,51 @@ MOV B, A
 AND B, 0x00ff ; je enako 0000000011111111
 SHR A, 8
 HLT
--------------------------------------------------------
 
+-------------------------------------------------------
+MOV D, 100
+MOV A, [D]
+HLT
+
+-------------------------------------------------------
+MOV [0x0100], 0xabcd
+MOVB [0x0102], 0x33
+
+MOVB AL, [0x0102]
+MOVB AH, 0 ; Pretvorba v  16-bitov
+ADD A, [0x0100]
+
+MOV [0x0100], A ; Shranimo nazaj na naslov 0x100
+HLT
+
+-------------------------------------------------------
+JMP main
+
+; Definicija spremenljivk
+x: DW 0xabcd 
+
+main:
+; x = x + 3
+  MOV A, [x]
+  ADD A, 3
+  MOV [x], A
+  HLT
+
+-------------------------------------------------------
+JMP main
+
+x: DW 2
+y: DW 3
+z: DW 2
+
+main:
+	MOV A, [z] ; A = z
+    MUL 3 ; A = 3z
+    MOV B, [x] ; B = x
+    ADD B, [y] ; B = x + y
+    SHR B, 1 ; B = (x + y)/2
+    SUB A, B ; A = A - B
+    MOV [z], A ; z = A
+	HLT
+    
+-------------------------------------------------------
