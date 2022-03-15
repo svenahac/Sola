@@ -64,12 +64,124 @@ z: DW 2
 
 main:
 	MOV A, [z] ; A = z
-    MUL 3 ; A = 3z
-    MOV B, [x] ; B = x
-    ADD B, [y] ; B = x + y
-    SHR B, 1 ; B = (x + y)/2
-    SUB A, B ; A = A - B
-    MOV [z], A ; z = A
+  MUL 3 ; A = 3z
+  MOV B, [x] ; B = x
+  ADD B, [y] ; B = x + y
+  SHR B, 1 ; B = (x + y)/2
+  SUB A, B ; A = A - B
+  MOV [z], A ; z = A
 	HLT
     
+-------------------------------------------------------
+
+JMP main
+
+x: DW 7 
+y: DW 7
+
+main:
+	MOV A, [x]
+  SUB A, [y]
+  HLT
+
+-------------------------------------------------------
+JMP main
+
+x: DW 5 
+y: DW 7
+
+main:
+	; if (x < y) x = x + 1
+  MOV A, [x]
+  CMP A, [y]
+  JB incx
+  JMP continue
+incx:
+	MOV A, [x]
+  INC A ; poveca za 1
+  MOV [x], A
+    
+continue:
+  ; program lahko nadaljujemo
+HLT
+
+-------------------------------------------------------
+; if (x < y) z = y
+; else z = x
+; Ugotovitev: z = max(x,y)
+
+JMP main
+
+x: DW 5 
+y: DW 7
+z: DW 0
+
+main:
+    MOV A, [x]
+    CMP A, [y] ; x-y primerja
+    JB sety ; if (x < y) jump sety
+    MOV A, [x] ; else
+    MOV [z], A ; z = x
+    JMP continue
+sety:
+	; z = y
+	MOV A, [y]
+  MOV [z], A
+    
+continue:
+    ; program lahko nadaljujemo
+    
+	HLT
+
+-------------------------------------------------------
+; if (x >= 100 && x < 200)
+; x = x / 2
+
+JMP main
+
+x: DW 250
+
+main:
+	MOV A, [x]
+	CMP A, 100 ; A >= 100 ?
+	JAE check2
+  JMP continue
+    
+check2:
+	CMP A, 200
+  JB ifbody
+  JMP continue
+    
+ifbody:
+  SHR A, 1 ; a <- a / 2
+	MOV [x], A
+
+continue:
+	HLT
+
+-------------------------------------------------------
+; if (x >= 100 && x < 200)
+; x = x / 2
+
+; if (x < 100 || x >= 200) {
+;	// preskoci telo if stavka
+; } else {
+;	x = x / 2
+; }
+
+JMP main
+
+x: DW 150
+
+main:
+	MOV A, [x]
+	CMP A, 100 ; A < 100 ?
+	JB continue
+  CMP A, 200 ; A >= 200 ?
+  JAE continue
+  SHR A, 1 ; A <- A / 2
+  MOV [x], A ; x = x / 2
+    
+continue:
+	HLT
 -------------------------------------------------------
