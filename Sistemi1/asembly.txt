@@ -184,4 +184,101 @@ main:
     
 continue:
 	HLT
+
+-------------------------------------------------------
+; while loop
+JMP main
+
+i: DW 0 ; int i = 0
+
+main:
+
+while_condition:
+	MOV A, [i]
+    CMP A, 10
+    JB while_body
+	JMP continue
+    
+while_body:
+	MOV A, [i]
+    INC A
+    MOV [i], A
+    JMP while_condition
+    
+continue:
+	HLT
+
+-------------------------------------------------------
+; poenostavljena
+JMP main
+
+i: DW 0 ; int i = 0
+
+main:
+	MOV A, [i]
+while:
+    CMP A, 10
+    JAE break
+    INC A
+	JMP while
+
+break:
+	MOV [i], A
+	HLT
+
+-------------------------------------------------------
+JMP main:
+
+sum: DW 0
+
+main:
+	MOV A, [sum]
+	MOV C, 1
+
+for:
+	CMP C, 10
+    JA break
+    ADD A, C
+    INC C
+    JMP for
+    
+break:
+	MOV [sum], A
+	HLT
+    
+
+-------------------------------------------------------
+
+JMP main
+
+n: DW 5  ; vhodni podatek
+f: DW 1  ; Rezultat
+
+main:
+    MOV A, [f] ; f hranimo v A, dokler ni znan rezultat
+    MOV C, 2 ; i = 2
+fori:
+    CMP C, [n] ; i > n?
+    JA breaki
+    MOV B, 0 ; fi = 0
+    MOV D, 0 ; j = 0
+    
+forj:
+    CMP D, C ; j >= i ?
+    JAE breakj
+    ADD B, A ; fi = fi + f
+    INC D
+    JMP forj
+
+breakj:
+    MOV A, B ; f = fi
+    INC C    ; i++
+    JMP fori
+    
+breaki:    
+    HLT
+
+-------------------------------------------------------
+
+
 -------------------------------------------------------
