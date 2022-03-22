@@ -1,0 +1,36 @@
+* {
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+p em {
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.main {
+  float: left;
+}
+
+.test {
+  float: left;
+}
+
+#medal {
+  max-width: 100%;
+  height: auto;
+}
+
+.item {
+  max-width: 25%;
+}
+
+#test {
+  max-width: 100%;
+}
+
+@media screen and (max-width: 800px) {
+  .test,
+  .main {
+    width: 20vw;
+  }
+}

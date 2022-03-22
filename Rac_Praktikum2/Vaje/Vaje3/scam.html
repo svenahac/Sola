@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scam 2</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1>Congratulations!!!</h1>
+    <div class="test">
+      <form action="blabla" method="POST">
+        <fieldset>
+          <legend>Select a prize</legend>
+          <input
+            type="radio"
+            id="banana"
+            name="prize"
+            value="banana"
+            required
+          />
+          <label for="banana"><img class="item" src="banana.png" /></label>
+          <input type="radio" id="phone" name="prize" value="phone" />
+          <label for="phone"><img class="item" src="phone.png" /></label>
+          <input type="radio" id="money" name="prize" value="money" />
+          <label for="money"><img class="item" src="money.png" /></label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Insert credit card details</legend>
+          <label for="owner">Owner:</label>
+          <input type="text" id="owner" name="owner" required />
+          <label for="cvv">CVV:</label>
+          <input
+            type="number"
+            id="cvv"
+            name="cvv"
+            maxlength="3"
+            max="999"
+            required
+          />
+          <br />
+          <label for="card">Card number</label>
+          <input type="number" id="card" name="card" required /><br />
+          <label for="date">Expiration date: </label>
+          <input type="month" id="date" name="date" required />
+        </fieldset>
+
+        <input type="submit" value="Submit to WIN!!!" />
+      </form>
+    </div>
+  </body>
+</html>
