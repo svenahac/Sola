@@ -34,7 +34,7 @@ insert1 [4;54;98;8;7;-5] 5;;
 
 let rec insertion_sort2 unsorted sorted = match unsorted with
 | [] -> sorted
-| g::r -> insertion_sort2 r (insert sorted g);;
+| g::r -> insertion_sort2 r (insert1 sorted g);;
 
 insertion_sort2 [4;54;98;8;7;-5] [];;
 
