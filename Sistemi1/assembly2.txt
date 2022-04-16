@@ -1,0 +1,119 @@
+JMP main
+
+number:
+	DW 1 ; number[0]
+    DW 2 ; number[1]
+    DW 3
+    DW 4
+    DW 5
+    DW 6
+    DW 7
+    DW 8
+    DW 9
+    DW 10 ; number[9]
+    
+main:
+	MOV D, number ; naslov 0-tega elementa
+    MOV C, 0 ; indeks i
+
+loop:
+	CMP C, 10
+    JAE break
+    MOV A, [D]
+    MUL 10
+    MOV [D], A
+    ADD D, 2
+    INC C
+    JMP loop
+    
+break:
+	HLT
+
+---------------------------------------------------------
+JMP main
+
+ORG 0x0100
+number:
+	; Prostor za 100 števil
+    ; 2000 zlogov (bytov)
+ORG 0x08D0
+
+main:
+	MOV D, number ; naslov 0-tega elementa
+    MOV C, 0 ; indeks i
+
+loop:
+	CMP C, 1000
+    JAE break
+    MOV A, C ; A <- i
+    SHL A, 1 ; A <- 2*i
+    ADD A, 2 ; A <- 2*i + 2
+    MOV [D], A ; number[i] = 2*i
+    INC C
+    ADD D, 2 ; Naslov naslednjega elementa
+    JMP loop
+    
+break:
+	HLT
+---------------------------------------------------------
+JMP main
+
+ORG 0x0100
+number:
+	; Prostor za 100 števil
+    ; 2000 zlogov (bytov)
+ORG 0x08D0
+
+main:
+	MOV D, number ; naslov 0-tega elementa
+    MOV C, 2 ; indeks i = 2
+
+loop:
+	CMP C, 2000
+    JAE break
+    MOV [D], C
+    ADD C, 2
+    ADD D, 2
+    JMP loop
+    
+break:
+	HLT
+---------------------------------------------------------
+JMP main
+
+s: DB "Hello world!"
+   DB 0
+   
+len: DW 0
+
+; length(s) vrne dolžino niza s
+; Parameter s (kazalec/naslov prvega znaka) prejme
+; preko registra C
+; Dolžino niza (16-bitno celo število) vrne preko
+; registra A
+length:
+	MOV  A, 0 ; Števec znakov
+loop:
+	MOVB BL, [C] ; Preberemo trenutni znak
+    CMPB BL, 0 ; Ali smo prebrali terminalno ničlo
+    JE return
+	INC A ; Štejemo trenutni znak
+    INC C ; Kazalec na naslednji znak
+    JMP loop
+    
+return:    
+    RET
+    
+
+main:
+	MOV SP, 0x0FFF ; Inicializacija sklada
+	MOV C, s ; Parameter s
+    CALL length
+    MOV [len], A
+    HLT
+---------------------------------------------------------
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
