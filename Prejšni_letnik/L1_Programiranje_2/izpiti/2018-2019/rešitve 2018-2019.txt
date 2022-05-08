@@ -1,0 +1,295 @@
+Lecture 14: Solutions of two written exams from 18/19
+Iztok Savnik
+24/5/2020
+
+
+WRITTEN EXAM 1, 18/19
+
+Exercise 1
+
+(* i-th element of the output list is a sum of all predecessors, including the i-th element of the input list *)
+let count l =
+    let rec count1 a l = match l with
+       | [] -> [a]
+       | h::t when a=0 -> count1 h t
+       | h::t -> a::count1 (h+a) t
+    in count1 0 l;;
+
+
+# count [1;2;3;4;5];;
+- : int list = [1; 3; 6; 10; 15]
+#
+
+(* i-th element of the output list is a sum of all predecessors from the input list, literally *)
+let count l =
+    let rec count1 a l = match l with
+       | [] -> [a]
+       | h::t -> a::count1 (h+a) t
+    in count1 0 l;;
+
+# count [1;2;3;4;5];;
+- : int list = [0; 1; 3; 6; 10; 15]
+#
+
+
+Exercise 2
+
+let join f a1 a2 =
+   let a3 = Array.make (Array.length a1 * Array.length a2) (0,0)
+   and m = ref 0
+   in for i=0 to (Array.length a1)-1 do
+          for j=0 to (Array.length a2)-1 do
+              let ki = fst a1.(i)
+              and kj = fst a2.(j)
+              in if ki=kj then begin
+                    a3.(!m) <- (ki,f (snd a1.(i)) (snd a2.(j)));
+                    m := !m+1
+                 end
+          done
+      done; !m,a3;;
+
+# let a1 = [| 1,2; 3,4; 5,6 |];;
+val a1 : (int * int) array = [|(1, 2); (3, 4); (5, 6)|]
+# let a2 = [| 1,3; 2,4; 3,5 |];;
+val a2 : (int * int) array = [|(1, 3); (2, 4); (3, 5)|]
+# join (fun a b -> a+b) a1 a2;;
+- : int * (int * int) array =
+(2, [|(1, 5); (3, 9); (0, 0); (0, 0); (0, 0); (0, 0); (0, 0); (0, 0); (0, 0)|])
+
+
+Exercise 3
+
+type 'a bush = None of 'a | One of 'a*'a bush | Two of 'a*'a bush*'a bush;;
+
+
+let b = Two (1,Two (2,One (3,None 4), None 5), One (6,None 7));;
+
+let rec print b = match b with
+    | None k -> print_int k; print_string " "
+    | One (k,s) -> print_int k; print_string " "; print s;
+    | Two (k,s1,s2) -> print_int k; print_string " "; print s1; print s2;;
+
+
+# let b = Two (1,Two (2,One (3,None 4), None 5), One (6,None 7));;
+val b : int bush = Two (1, Two (2, One (3, None 4), None 5), One (6, None 7))
+# print b;;
+1 2 3 4 5 6 7 - : unit = ()
+
+
+
+Exercise 4
+
+class kvs =       
+   let rec check a l = match l with
+           [] -> None | (k,v)::_ when a=k -> Some v | _::t -> check a t
+   in object
+
+      val mutable store : (int*string) list = []
+
+      method get a = check a store
+      method put (a,b) = store <- (a,b)::store
+end
+
+# let s = new kvs;;
+val s : kvs = <obj>
+# s#put (1,"ena"); s#put (2,"dva");;
+- : unit = ()
+# s#get 1;;
+- : string option = Some "ena"
+# s#get 3;;
+- : string option = None
+#
+
+
+class kvs =       
+   let rec check a l = match l with
+           [] -> None | (k,v)::_ when k=a -> Some v | _::t -> check a t
+   in object (s)
+
+      val mutable store : (int*string) list = []
+
+      method get a = check a store
+      method put (a,b) =
+         let rec delete a l =
+             match l with
+                 [] -> [] | (k,_)::t when k=a -> t | kv::t -> kv::delete a t
+         in match (check a store) with
+              None -> store <- (a,b)::store
+            | Some _ -> let store1 = delete a store
+                      in store <- (a,b)::store1
+end
+
+
+# let s = new kvs;;
+val s : kvs = <obj>
+# s#put (1,"one"); s#put (2,"two"); s#put (3,"three");;
+- : unit = ()
+# s#get 1;;
+- : string option = Some "one"
+# s#put (2,"2");;
+- : unit = ()
+# s#get 2;;
+- : string option = Some "2"
+# s#get 3;;
+- : string option = Some "three"
+# s#get 1;;    
+- : string option = Some "one"
+# s#get 5;;
+- : string option = None
+#
+
+
+
+
+
+WRITTEN EXAM 3, 18/19
+
+Exercise 1
+
+let months = ["Jan"; "Feb"; "Mar"; "Apr"; "May"; "Jun"; "Jul"; "Aug"; "Sep"; "Oct"; "Nov"; "Dec"]
+
+let is_date d m =
+    match (List.mem m months) with
+    | true -> (match m with
+               | "Jan"|"Mar"|"May"|"Jul"|"Aug"|"Nov" -> (d <= 31) && (d >= 1)
+               | "Feb" -> (d <= 28) && (d >= 1)
+               | _ -> (d <= 30) && (d >=1))
+    | _ -> false;;
+
+
+# is_date 31 "Jan";;
+- : bool = true
+# is_date 31 "Feb";;
+- : bool = false
+#
+
+
+Exercise 2
+
+# 0 - not started
+# 1 - started
+# 2 - going up
+# 3 - going down
+
+let is_unimodal l =
+    let rec isum s a l =
+        match s,l with
+        | 0,[] -> true
+        | 0,h::t -> isum 1 h t
+        | 1,[] -> true
+        | 1,h::t when a<=h -> isum 2 h t
+        | 1,h::t when a>h -> isum 3 h t
+        | 2,[] -> true
+        | 2,h::t when a<=h -> isum 2 h t
+        | 2,h::t when a>h -> isum 3 h t
+        | 3,[] -> true
+        | 3,h::t when a>=h -> isum 3 h t
+        | 3,_ -> false
+        | _ -> false
+    in isum 0 0 l;;
+
+# is_unimodal [1;2;3;2;3];;
+- : bool = false
+# is_unimodal [1;2;3;4];;
+- : bool = true
+# is_unimodal [4;3;2;1];;
+- : bool = true
+# is_unimodal [1;2;3;2;1];;
+- : bool = true
+#
+
+
+Exercise 3
+
+
+let multiples a b =
+    let r = Array.make b 0
+    in for i=(b-1) downto 0 do
+           r.(i) <- a*(i+1)
+       done;
+       r;;
+
+(* Wrong! Work with arrays! *)
+let rec multiples a b =
+    match b with
+       | v when v>0 -> (multiples a (b-1))@[a*b]
+       | _ -> []
+
+# multiples 3 3;;
+- : int array = [|3; 6; 9|]
+# multiples 7 5;;
+- : int array = [|7; 14; 21; 28; 35|]
+#
+
+let rec lcm a1 a2 =
+    let i = ref 0
+    and j = ref 0
+    and a1c = Array.length a1
+    and a2c = Array.length a2
+    and found = ref false
+    in while ((!i < a1c) && (!j < a2c) && not !found) do
+          match a1.(!i), a2.(!j) with
+          | a,b when a=b -> found := true
+          | a,b when a>b -> j := !j+1
+          | a,b when a<b -> i := !i+1
+          | _ -> ()
+       done;
+       if !found then Some a1.(!i)
+       else None;;
+
+# let a1 = multiples 5 10;;
+val a1 : int array = [|5; 10; 15; 20; 25; 30; 35; 40; 45; 50|]
+# let a2 = multiples 7 10;;
+val a2 : int array = [|7; 14; 21; 28; 35; 42; 49; 56; 63; 70|]
+# let a3 = multiples 3 10;;
+val a3 : int array = [|3; 6; 9; 12; 15; 18; 21; 24; 27; 30|]
+# let a4 = multiples 11 10;;
+val a4 : int array = [|11; 22; 33; 44; 55; 66; 77; 88; 99; 110|]
+# lcm a2 a4;;
+- : int option = None
+# lcm a1 a2;;
+- : int option = Some 35
+# lcm a2 a3;;
+- : int option = Some 21
+#
+
+
+Exercise 4
+
+class display x y =
+    object
+        val mutable dp = Array.make_matrix x y 0.0
+        val xl = x
+        val yl = y
+
+        method get x y = dp.(x).(y)
+        method put x y v = dp.(x).(y) <- v
+        method clip l u =
+           let clp v =
+               match (v>=l),(v<=u) with
+               | true,true -> v
+               | true,false -> u
+               | false,true -> l
+               | _ -> 0.0 (* not possible *)
+           in for i = 0 to (xl-1) do
+                  for j = 0 to (yl-1) do
+                      dp.(i).(j) <- clp dp.(i).(j)
+                  done     
+              done
+    end
+
+# let d = new  display 3 3;;
+val d : display = <obj>
+# d#put 0 0 10.0;
+  d#put 1 1 20.0;
+  d#put 2 2 30.0;;
+- : unit = ()
+# d#clip 10.0 20.0;;
+- : unit = ()
+# d#get 2 2;;
+- : float = 20.
+# d#get 1 1;;
+- : float = 20.
+# d#get 1 2;;
+- : float = 10.
+#

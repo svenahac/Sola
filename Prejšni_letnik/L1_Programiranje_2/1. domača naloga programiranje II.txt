@@ -1,0 +1,44 @@
+(*
+  * Ime:        Andrej
+  * Priimek:    Erjavec
+  * Vpisna št.: 89201090
+*)
+
+(* NALOGA 1 *)
+
+let prime_separator seznam = 
+let rec split seznam seznamP seznamS = match seznam with
+| [] -> seznamP, seznamS
+| g::r -> 
+        let rec check g x counter =
+            if x > 0 then
+                if ((g mod x) = 0) then check g (x-1) (counter+1)
+                else check g (x-1) counter
+            else 
+                if (counter > 2) then split r (seznamP) (g::seznamS)
+                else split r (g::seznamP) seznamS
+                in check g g 0;
+	in split seznam [] [];;
+
+
+(* NALOGA 2 *)
+
+let rec nextpascalrow row = match row with
+| [] -> [1]
+| _::[] -> [1]
+| f::mid::l -> 
+    if (f = 1) then f::(f+mid)::(nextpascalrow (mid::l))
+    else (f+mid)::(nextpascalrow (mid::l));;
+
+
+(* NALOGA 3 *)
+
+let listdiff seznam1 seznam2 =
+    List.filter (fun element -> List.for_all (fun x -> (element != x))seznam2) seznam1;;
+    
+
+(* NALOGA 4 *)
+
+let cart_fun funkcija seznam1 seznam2 = 
+  List.fold_right (fun el1 el2 -> el2@
+      (List.map (fun x -> (funkcija el1 x)) seznam2)) seznam1 [];;

@@ -1,0 +1,138 @@
+(*
+  * Ime:        Andrej
+  * Priimek:    Erjavec
+  * Smer: 	RIN
+  * Vpisna št.: 89201090
+*)
+
+
+(* NALOGA 1.1 *)
+
+let matrix= [|
+  [|false; true; true; false|]; 
+  [|true; false; false; true|];
+  [|false; false; true; true|]
+|];;
+
+
+let rec flip matrika y x = 
+  let rec neg matrika x y = match matrika.(y).(x) with
+    | true -> (matrika.(y).(x) <- false)
+    | false -> (matrika.(y).(x) <- true) 
+  in 
+  (neg matrika x y;
+   if (y-1 >= 0) then neg matrika x (y-1); 
+   if (y+1 <= (Array.length matrika) - 1) then neg matrika x (y+1);
+   if (x-1 >= 0) then neg matrika (x-1) y;
+   if (x+1 <= (Array.length matrika.(0)) - 1) then neg matrika (x+1) y;
+   matrika);;
+
+
+
+(* NALOGA 1.2 *)
+let print_matrix matrika = 
+  for i=0 to ((Array.length matrika) - 1) do (
+    for j = 0 to (Array.length matrika.(0) - 1) do (
+      if matrika.(i).(j) = true then print_string "T" 
+      else print_string "F";
+    ) done;
+    print_string "\n";
+  ) done;;
+
+
+
+(* NALOGA 2.1 *)
+
+type slidingTile = {
+  mutable matrix:char array array;
+  mutable x:int;
+  mutable y:int
+};;
+
+
+(* NALOGA 2.2 *)
+
+(* vnos - prvo polje ima koordinati (1,1) itd. *)
+let slide (tile:slidingTile) (kx:int) (ky:int) = 
+  let move kx ky x y = 
+    tile.matrix.(tile.x).(tile.y) <- tile.matrix.(kx-1).(ky-1);
+    tile.matrix.(kx-1).(ky-1) <- ' ';
+    tile.x <- (kx-1); tile.y <- (ky-1) in
+  
+  if (tile.x = (kx+1) && tile.y = ky) then move kx ky (tile.x-1) tile.y
+  else if (tile.x = (kx-1) && tile.y = ky) then move kx ky (tile.x+1) tile.y
+  else if (tile.x = kx && tile.y = (ky+1)) then move kx ky tile.x (tile.y-1)
+  else if (tile.x = kx && tile.y = (ky-1)) then move kx ky tile.x (tile.y+1); 
+  tile;;
+
+
+(* NALOGA 2.3 *)
+
+let print_tile (tile:slidingTile) = 
+  for i = 0 to (Array.length tile.matrix  - 1) do (
+    for j = 0 to (Array.length tile.matrix.(0) - 1) do (
+      print_char tile.matrix.(i).(j)
+    ) done;
+    print_char '\n'
+  ) done;;
+
+
+
+(* NALOGA 3.1 *)
+
+type suit = 
+  | Sword 
+  | Cup 
+  | Club
+  | Coin 
+;;
+
+(* NALOGA 3.2 *)
+type figure = 
+  | King | Rider | Jack | N1 | N2 | N3 | N4 | N5 | N6 | N7 ;;
+
+type briscola = (suit*figure);;
+
+
+(* NALOGA 3.3 *)
+let points (card:briscola) = match card with
+  | (_,N1) -> 11
+  | (_,N3) -> 10
+  | (_,King) -> 4
+  | (_,Rider) -> 3
+  | (_,Jack) -> 2
+  | (_,(N7|N6|N5|N4|N2)) -> 0;;
+
+
+(* NALOGA 3.4 *)
+let color (card:briscola) = 
+  fst(card);;
+
+
+(* NALOGA 3.5 *)
+let higherfigure (card1:briscola) (card2:briscola) = 
+  let rec get_index array element index =
+    if (array.(index) = element) then index 
+    else get_index array element (index+1) in 
+  let cards_ranking = [|N2; N4; N5; N6; N7; Jack; Rider; King; N3; N1|] in
+  if (get_index cards_ranking (snd(card1)) 0 >= get_index cards_ranking (snd(card2)) 0) then true else false;;
+
+
+(* NALOGA 3.6 *)
+let highercard trumpsuit (card1:briscola) (card2:briscola) = 
+  if (fst(card1) = fst(card2)) then
+    if (fst(card2) = trumpsuit) then 
+      higherfigure card1 card2
+    else higherfigure card1 card2
+  else if (fst(card2) = trumpsuit) then false
+  else true;;
+
+
+(* TEST *)
+points (Club, N1);;
+points (Sword, Jack);;
+color (Sword, Jack);;
+higherfigure (Coin, King) (Cup, Rider);;
+highercard Cup (Coin, King) (Cup, Rider);;
+highercard Sword (Club, N7) (Club, N3);;
+highercard Club (Club, N1) (Club, N6);;

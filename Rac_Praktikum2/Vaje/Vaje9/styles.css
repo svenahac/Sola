@@ -1,0 +1,18 @@
+table {
+  border: 2px solid black;
+  border-collapse: collapse;
+}
+td {
+  border: 2px solid black;
+  padding: 5px;
+}
+
+.square {
+  width: 100px;
+  height: 100px;
+  background-color: yellow;
+  color: darkred;
+  font-size: 50px;
+  line-height: 100px;
+  text-align: center;
+}

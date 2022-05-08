@@ -112,8 +112,229 @@ main:
     MOV [len], A
     HLT
 ---------------------------------------------------------
-
+loop:
+	IN 5 ; Preberemo status tipkovnice
+    CMP A, 0 ; Ali je prišlo do dogodka
+    JE loop ; Če ne, beri ponovno
+    AND A, 1 ; Maskiramo keydown event
+    CMP A, 1 ; Ali je keydown?
+    JE display_key
+    MOVB [0x1000], 0 ; Če ni, pobrišem prvo celico prikazovalnika
+    JMP loop ; Ponovno preberi status
+    
+display_key:
+    IN 6 ; Preberemo kodo ASCII
+    MOVB [0x1000], AL ; Premakni kodo tipke na prikazovalnik
+    JMP loop ; ponovno preberi
+	HLT
 ---------------------------------------------------------
+JMP main
+JMP isr
 
+isr:
+    PUSH A ; ISR uporablja register A, zato ga shranimo na sklad
+	; Ker edino tipkovnica lahko proži prekinitve,
+    ; nam pri tej nalogi ni treba preveriti, katera
+    ; naprava je to prekinitev sporžila
+    IN 5 ; Preberemo status tipkovnice
+    AND A, 1 ; Maskiramo dogodek keydown
+    CMP A, 1 ; Ali je dogodek keydown
+    JE display_key
+    IN 6 ; Preberemo KBDDATA, zato da se pobriše KBDSTATUS
+    MOVB [0x1000], 0 ; Pobrišemo celico
+    JMP iret
+    
+display_key:
+	IN 6 ; Preberemo (KBDDATA) kodo pritisnjene tipke
+    MOVB [0x1000], AL ; Izpišemo kodo ASCII
+    
+iret:
+	; Preko registra IRQEOI sporočimo, katero zahtevo smo obdelali
+    MOV A, 1 ; Maska za tipkovnico
+    OUT 2 ; Masko zapišemo v IRQEOI in s tem umaknemo zahtevo
+	; Ker je KBDSTATUS = 0, smo preko IRQEOI umaknili zahtevo za prekinitev.
+    POP A ; restavriramo vrednost registra A
+    IRET
+    
+main:
+	MOV SP, 0x0FFF ; Inicalizacija sklada
+    MOV A, 1 ; Maska za tipkovnico
+    OUT 0 ; Omogočimo prekinitve samo tipkovnici
+    STI ; Omogočimo prekinitve globalno
+	HLT
 ---------------------------------------------------------
+JMP main
+JMP isr
 
+isr:
+	PUSH A
+	; Časovnik je edina naprava, ki sme prožiti prekinitev
+    ; zato nam ni treba preverjati IRQSTATUS
+    MOV AL, [0x1000] ; Kaj je trenutno na zaslonu
+    CMPB AL, '9' ; Ali smo dosegli 9?
+    JNE noreset
+    MOVB AL 0x2F ; En znak pred '0'
+noreset:
+    INCB AL ; Povečamo ASCII kodo za 1
+    MOVB [0x1000], AL ; Na zaslon damo novo ASCII kodo
+    ; Sedaj še umaknemo zahtevo za prekinitev
+    MOV A, 2 ; Maska za časovnik
+    OUT 2 ; zapišemo jo v IRQEOI in s tem umaknemo zahtevo
+    POP A
+	IRET
+
+main:
+	MOV SP, 0x0FFF
+    MOVB [0x1000], '0'
+    MOV A, 1000 ; Prekinitev vsakih 1000 urnih period
+    OUT 3 ; Zapišemo v TMRPRELOAD
+    MOV A, 2 ; Maska za časovnik
+    OUT 0 ; Zapišemo v IRQMASK - omogočimo prekinitve časovnika
+    STI ; M = 1
+    HLT
+---------------------------------------------------------
+JMP main
+
+main:
+	MOV A, 2 ; vključimo graficno kartico v načinu BITMAP
+    OUT 7
+	MOV A, 3 ; pobrišemo zaslon
+    OUT 7
+    MOV A, 32639
+    OUT 8
+    MOV A, 31
+    OUT 9
+    HLT
+---------------------------------------------------------
+JMP main
+
+main:
+	MOV A, 2 ; vključimo graficno kartico v načinu BITMAP
+    OUT 7
+	MOV A, 3 ; pobrišemo zaslon
+    OUT 7
+
+loop:
+	IN 5
+    CMP A, 0
+    JE loop
+    AND A, 1
+    CMP A, 1
+    JE display
+    JMP loop
+    
+display:
+	IN 10
+	OUT 8
+    IN 10
+    OUT 9
+    JMP loop
+    HLT
+---------------------------------------------------------
+JMP main
+
+main:
+	MOV A, 2
+    OUT 7
+    MOV A, 3
+    OUT 7
+    
+	MOV B, 0 ; začetni VRAM naslov je 0
+    MOV C, 255
+loop:
+	MOV A, B
+    OUT 8 ; nastavimo VRAM naslov za rdečo
+   	MOV A, 224 ; rdeča barva
+    OUT 9 ; VIDDATA
+    
+    MOV A, C
+    OUT 8 ; nastavimo VRAM naslov za rumeno
+    MOV A, 252 ; rumena barva
+    OUT 9 ; VIDDATA
+    
+    CMP B, 0xFFFF ; Alis smo izrisali zadnji pixel
+    JE break
+    ADD B, 257 ; Naslov naslednjega rdečega piksla
+    ADD C, 255 ; Naslov naslednjega rumenega piksla
+    JMP loop
+    
+break:
+    HLT
+---------------------------------------------------------
+JMP main
+JMP isr
+
+; true (1) / false (0)
+gor: DB 0 
+dol: DB 0
+levo: DB 0
+desno: DB 0
+
+isr:
+	PUSH A
+    IN 5 ; preberemo KBDSTATUS
+    CMP A, 1 ; Ali je keydown?
+    JNE keyup ; če ni, skoči na keyup
+    MOVB BL, 1 ; Eno od štirih tipk bom nastavil na true
+    JMP setkey
+    
+keyup:
+	MOVB BL, 0 ; Pritisnjeno tipko bom nastavil na false
+setkey:
+	IN 6 ; Katera tipka je bila pritisnjena?
+    CMPB AL, '8' ; Ali je bila 8?
+    JNE check2 ; Če ne preveri tipko 2
+    MOVB [gor], BL ; spremenim  stanje tipke gor
+    JMP done
+check2:
+	CMPB AL, '2'
+    JNE check4
+    MOVB [dol], BL
+    JMP done
+    
+check4:
+	CMPB AL, '4'
+    JNE check6
+    MOVB [levo], BL
+    JMP done
+    
+check6:
+	CMPB AL, '6'
+    JNE done
+    MOVB [desno], BL
+    
+done:
+	MOV A, 1 ; Umaknemo zahtevo po prekinitvi
+    OUT 2
+	IRET
+
+slevo: DB "LEVO\0x00"
+sdesno: DB "DESNO\0x00"
+sgor: DB "GOR\0x00"
+sdol: DB "DOL\0x00"
+slevogor: DB "LEVO GOR\0x00"
+sdesnogor: DB "DESNO GOR\0x00"
+slevodol: DB "LEVO DOL\0x00"
+sdesnodol: DB "DESNO DOL\0x00"
+
+main:
+	MOV SP, 0x0FFF ; Inicializacija sklada
+
+    MOV A, 1 ; Maska za prekinitve tipkovnice
+    OUT 0 ; Omogočimo prekinitve tipkovnici
+    STI ; Omogočimo prekinitve globalno
+    
+loop:
+	MOVB AL, [levo]
+    CMPB AL, 1
+    JNE checkdesno
+    MOVB AL, [desno]
+    CMPB AL, 0
+    JNE checkdesno
+    MOVB A, [gor]
+    CMP A, [dol]
+    JNE checkdesno
+    
+checkdesno:
+	HLT
+---------------------------------------------------------

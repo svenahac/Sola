@@ -1,0 +1,253 @@
+(*
+  * Ime:        Andrej
+  * Priimek:    Erjavec
+  * Smer: 	    RIN
+  * Vpisna št.: 89201090
+*)
+
+
+(* NALOGA 1 *)
+
+type experience = Beginner | Intermediate | Experienced | WorldClass | AI;;
+
+
+class driver (exp:experience) (max_dist:float) = 
+  object (this)
+    val mutable experience = exp
+    val mutable max_distance = max_dist
+                       
+    method get_exp = experience
+    method get_max_dist = max_distance
+      
+    method set_exp e = experience <- e
+    method set_max_dist d = max_distance <- d
+        
+    method print_exp exp = match exp with
+      | Beginner -> "Beginner"
+      | Intermediate -> "Intermediate"
+      | Experienced -> "Experienced"
+      | WorldClass -> "WorldClass"
+      | AI -> "AI"
+        
+    method to_string = 
+      print_string "Bus driver";
+      print_string "\\nExperience level: ";
+      print_string (this#print_exp experience);
+      print_string "\\nMax allowed distance to drive: ";
+      print_float max_distance;
+  end;;
+
+
+class bus (fs:int) (rch:float) (prc:float) (fu:float) (sts:int) =
+  object (this)
+    val mutable free_seats = sts
+    val reach = rch
+    val price = prc
+    val fuel_usage = fu
+    val seats = sts
+      
+    method get_free_seats = free_seats
+    method get_reach = reach
+    method get_price = price
+    method get_fuel_usage = fuel_usage
+    method get_seats = seats
+      
+    method set_free_seats fs = free_seats <- fs
+        
+    method to_string =
+      print_string "Bus";
+      print_string ("\nFree seats: "^(string_of_int free_seats));
+      print_string ("\nReach: "^(string_of_float reach)^" km");
+      print_string ("\nPrice: "^(string_of_float price)^" €");
+      print_string ("\nFuel usage: "^(string_of_float fuel_usage)^" l/km");
+      print_string ("\nSeats: "^(string_of_int seats));
+      
+    method addPassanger (p:int) = 
+      if (p <= free_seats) then (free_seats <- free_seats - p; true)
+      else false
+  end;;
+      
+
+class travelAgency (bl:bus list) (mb:int) (dl:driver list) (bdl:(bus*driver) list) = 
+  object (this) 
+    val mutable bus_list = bl
+    val mutable max_bus = mb
+    val mutable driver_list = dl
+    val mutable bus_driver_list = bdl
+      
+    method get_bus_list = bus_list
+    method get_max_bus = max_bus
+    method get_driver_list = driver_list
+    method get_bus_driver_list = bus_driver_list
+      
+    method set_bus_list bl = bus_list <- bl
+    method set_max_bus mb = max_bus <- mb
+    method set_driver_list dl = driver_list <- dl
+        
+    method to_string = 
+      print_string "Travel Agency";
+      print_string "\nCurrent number of buses: ";
+      print_int (List.length bus_list);
+      print_string "\nMax number of buses: ";
+      print_int max_bus;
+      print_string "\nCurrent number of drivers: ";
+      print_int (List.length driver_list);
+      
+    method addBus (b:bus) =
+      if List.length bus_list < max_bus then (bus_list <- b::bus_list; true)
+      else false
+        
+    method addDriver (d:driver) =
+      driver_list <- d::driver_list 
+       
+    method randomSchedule =
+      let ri = Random.int (List.length driver_list - 1) in
+      let randomDriver = List.nth driver_list ri in
+      bus_driver_list <- List.map (fun b -> (b, randomDriver)) bus_list
+      
+  
+    
+    method rentBus npass dist =
+      this#randomSchedule; 
+      
+      let driver_price driver = match driver#get_exp with
+        | Beginner -> 1
+        | Intermediate -> 2
+        | Experienced -> 3
+        | WorldClass -> 5
+        | AI -> 20 in
+      
+      let total_price (bdp:(bus*driver)) =
+        let bus = fst bdp in
+        let driver = snd bdp in
+        float_of_int (driver_price driver)*.dist +.
+        (bus#get_fuel_usage)*.dist +. 
+        (bus#get_price)*.float_of_int npass in 
+      
+      let bdl1 = 
+        List.filter (fun bdp -> ((fst bdp)#get_free_seats >= npass && 
+                                 (snd bdp)#get_max_dist <= dist)) bus_driver_list in
+      
+      let rec find_cheapest list =
+        match list with 
+        | [] -> (List.hd bus_list,List.hd driver_list)
+        | [h] -> h
+        | h::t -> 
+            if total_price h < total_price (find_cheapest t) then h 
+            else find_cheapest t in
+      find_cheapest bdl1
+      
+        
+    
+    method optimizedRent npass dist =
+      
+      let opti_bus =
+        let bus_price bus = 
+          (bus#get_fuel_usage)*.dist +. 
+          (bus#get_price)*.float_of_int npass in 
+        let bl1 =
+          List.filter (fun b -> (b#get_free_seats >= npass)) bus_list in
+      
+        let rec cheapest_bus bl = 
+          match bl with
+          | [] -> (List.hd bl)
+          | [b] -> b
+          | h::t ->
+              if bus_price h < bus_price (cheapest_bus t) then h
+              else cheapest_bus t in
+        cheapest_bus bl1 in
+      
+      let opti_driver =    
+        let driver_price driver = match driver#get_exp with
+          | Beginner -> 1
+          | Intermediate -> 2
+          | Experienced -> 3
+          | WorldClass -> 5
+          | AI -> 20 in
+      
+        let dl1 = 
+          List.filter (fun d -> (d#get_max_dist <= dist)) driver_list in
+        let rec cheapest_driver dl =
+          match dl with
+          | [] -> (List.hd driver_list)
+          | [d] -> d
+          | h::t ->
+              if driver_price h < driver_price (cheapest_driver t) then h 
+              else cheapest_driver t in
+        cheapest_driver dl1 in
+      
+      (opti_bus, opti_driver) 
+  end;;
+
+
+let bus1 = new bus 24 600. 12. 20. 60;;
+let bus2 = new bus 6 200. 5. 14. 30;;
+let bus3 = new bus 17 400. 11. 28. 40;;
+bus2#to_string;;
+
+let driver1 = new driver Experienced 500.;;
+let driver2 = new driver Beginner 120.;;
+let driver3 = new driver AI 1300.;;
+let driver4 = new driver WorldClass 800.;;
+
+let nomago = new travelAgency [bus1;bus2;bus3] 20 [driver1;driver2;driver3] [];; 
+nomago#addDriver driver4;;
+nomago#get_bus_driver_list;;
+nomago#randomSchedule;;
+nomago#get_bus_driver_list;;
+nomago#to_string;;
+
+
+
+
+(* NALOGA 2 *)
+
+type graph_term = {nodes : char list; edges : (char * float * char) list};;
+
+let oneStepInfection graph node = 
+  let selection = List.filter (fun (n1,w,n2) -> (n1 = node && w > 0.6)) graph.edges in 
+  node::List.map (fun (_,_,n2) -> n2) selection;;
+
+
+let infectionProcess graph node1 = 
+  let rec onestep node = 
+    let o = oneStepInfection graph node in
+    match o with
+    | [] -> []
+    | [a] -> [a]
+    | hd::tl -> hd::onestep (List.nth tl 0) in
+  onestep node1;;
+                 
+
+let mostInfectious graph =
+  let nodes = graph.nodes in
+  let all_inf_list = List.map (fun x -> infectionProcess graph x) nodes in
+  let length_list = List.map (fun x -> List.length x) all_inf_list in
+  
+  let find_longest lst = 
+    let max_index = ref 0 in 
+    let rec find_max index =
+      if index > List.length lst then max_index := !max_index else
+        (if List.nth lst index > List.nth lst !max_index then max_index := index
+         else find_max (index+1)) in
+    find_max 0;
+    max_index in
+  let i = !(find_longest length_list) in
+  List.nth graph.nodes i;;
+  
+
+let samplegraph:graph_term = {nodes = ['1';'2';'3';'4';'5'];
+                              edges = [('1',0.3,'2'); ('2',0.7,'1'); ('1',10.1,'3');
+                                       ('3',3.,'4'); ('3',0.1,'5'); ('4',7.,'5');
+                                       ('2',6.,'3')]};;
+
+oneStepInfection samplegraph '1';;
+oneStepInfection samplegraph '2';;
+oneStepInfection samplegraph '3';;
+oneStepInfection samplegraph '4';;
+oneStepInfection samplegraph '5';;
+
+infectionProcess samplegraph '1';;
+infectionProcess samplegraph '2';;
+
+mostInfectious samplegraph;;

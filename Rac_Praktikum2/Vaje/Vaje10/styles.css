@@ -1,0 +1,30 @@
+.square {
+  line-height: 50px;
+  text-align: center;
+  font-size: 30px;
+  color: transparent;
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  background-color: yellow;
+  border: 1px solid black;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+.square:hover {
+  background-color: orange;
+  cursor: pointer;
+}
+
+.clicked {
+  color: black;
+}
+
+.test {
+  line-height: 50px;
+  text-align: center;
+  font-size: 30px;
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+}

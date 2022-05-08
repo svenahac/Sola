@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drag&Drop</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <table>
+      <tr>
+        <td
+          id="cell1"
+          ondragover="squareOver(event)"
+          ondrop="squareDrop(event, 1)"
+        >
+          <div
+            id="square1"
+            class="square"
+            draggable="true"
+            ondragstart="squareDrag(event, 1)"
+          >
+            1
+          </div>
+        </td>
+        <td
+          id="cell2"
+          ondragover="squareOver(event)"
+          ondrop="squareDrop(event, 2)"
+        >
+          <div
+            id="square2"
+            class="square"
+            draggable="true"
+            ondragstart="squareDrag(event, 2)"
+          >
+            2
+          </div>
+        </td>
+        <td
+          id="cell3"
+          ondragover="squareOver(event)"
+          ondrop="squareDrop(event, 3)"
+        >
+          <div
+            id="square3"
+            class="square"
+            draggable="true"
+            ondragstart="squareDrag(event, 3)"
+          >
+            3
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td
+          id="cell4"
+          ondragover="squareOver(event)"
+          ondrop="squareDrop(event, 4)"
+        >
+          <div
+            id="square4"
+            class="square"
+            draggable="true"
+            ondragstart="squareDrag(event, 4)"
+          >
+            4
+          </div>
+        </td>
+        <td
+          id="cell5"
+          ondragover="squareOver(event)"
+          ondrop="squareDrop(event, 5)"
+        >
+          <div
+            id="square5"
+            class="square"
+            draggable="true"
+            ondragstart="squareDrag(event, 5)"
+          >
+            5
+          </div>
+        </td>
+        <td
+          id="cell6"
+          ondragover="squareOver(event)"
+          ondrop="squareDrop(event, 6)"
+        >
+          <div
+            id="square6"
+            class="square"
+            draggable="true"
+            ondragstart="squareDrag(event, 6)"
+          >
+            6
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td
+          id="cell7"
+          ondragover="squareOver(event)"
+          ondrop="squareDrop(event, 7)"
+        >
+          <div
+            id="square7"
+            class="square"
+            draggable="true"
+            ondragstart="squareDrag(event, 7)"
+          >
+            7
+          </div>
+        </td>
+        <td
+          id="cell8"
+          ondragover="squareOver(event)"
+          ondrop="squareDrop(event, 8)"
+        >
+          <div
+            id="square8"
+            class="square"
+            draggable="true"
+            ondragstart="squareDrag(event, 8)"
+          >
+            8
+          </div>
+        </td>
+        <td
+          id="cell9"
+          ondragover="squareOver(event)"
+          ondrop="squareDrop(event, 9)"
+        ></td>
+      </tr>
+    </table>
+    <p><button onclick="shuffle()">Shuffle</button></p>
+    <script src="script.js"></script>
+  </body>
+</html>

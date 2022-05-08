@@ -1,0 +1,194 @@
+Lecture 14: Solutions of two written exams from 19/20
+Iztok Savnik
+28/5/2021
+
+
+WRITTEN EXAM 1, 19/20
+
+Exercise 1
+
+-- solution 1 (splitting list into two parts)
+
+let rec shiftm l1 l2 c = match c,l1 with
+    | 0, _ -> l1 @ (List.rev l2)
+    | _, h::t -> shiftm t (h::l2) (c-1)
+    | _,_ -> [];;
+
+let shift l n = 
+    let ln = List.length l
+    in shiftm l [] (ln-n);;
+
+-- solution 2
+
+let l = ref [];;
+
+let rec shift1 l1 l2 = match l1 with
+    | [e] ->  e::(List.rev l2)
+    | h::t -> shift1 t (h::l2)
+    | _ -> [];;
+
+let shift l1 n = 
+    l := l1;
+    for i=1 to n do
+       l := shift1 !l []
+    done;
+    !l;;
+
+-- solution 3 (shift by one through a fun. parameter)
+
+let l = ref [];;
+
+let rec shift1 l1 = match l1 with
+    | [e] ->  [e]
+    | h::t -> let h1::t1 = shift1 t
+              in h1::h::t1
+    | _ -> [];;
+
+let shift l1 n = 
+    l := l1;
+    for i=1 to n do
+       l := shift1 !l
+    done;
+    !l;;
+
+-- solution 4 (shift by one; catch the last and pop from act. records)
+
+let rec shift1 l1 = match l1 with
+    | [e] ->  [e]
+    | h::t -> let h1::t1 = shift1 t
+              in h1::h::t1
+    | _ -> [];;
+
+let rec shift l n = match n with 
+    | 0 -> l
+    | _ -> shift1 (shift l (n-1));; 
+
+
+Exercise 2
+
+type position = Empty | King | Queen | Bishop | Knight | Rook | Pawn;;
+type chees_table = position array array;;
+
+let c = Array.make_matrix 8 8 Empty;;
+c.(3).(3) <- Queen;;
+
+let find_queen c = 
+    let p = ref (0,0) 
+    in for i = 0 to 7 do
+          for j = 0 to 7 do 
+              if c.(i).(j) = Queen then p := (i,j)
+          done
+       done; !p;;
+          
+let queen_attack c (xp,yp) = 
+    let (xq,yq) = find_queen c
+    in (abs(xq-xp) = abs(yq-yp)) || (xq = xp) || (yq = yp);;
+
+
+Exercise 3
+
+type 'a bush = { mutable key: 'a; mutable subts: 'a bush list };;
+
+let b = {key=1; subts=[{key=3; subts=[]};
+                       {key=5; subts=[{key=7; subts=[]}; {key=9; subts=[]}]}]};;
+
+let rec bush_map f b = 
+    { key=f b.key; subts=List.map (fun x -> bush_map f x) b.subts };;
+
+
+Exercise 4
+
+class ['a] matrix ix iy (v:'a) = 
+   object 
+     val x = ix
+     val y = iy 
+     val mutable m:'a array array = Array.make_matrix ix iy (v:'a)
+     method get i j = m.(i).(j)
+     method set i j v = m.(i).(j) <- v
+   end;;
+
+type color = {mutable r:int; mutable g:int; mutable b:int};;
+
+class screen ix iy = 
+   object
+     inherit [color] matrix ix iy {r=0; g=0; b=0}
+     method get_R x y = m.(x).(y).r
+     method get_G x y = m.(x).(y).g
+     method get_B x y = m.(x).(y).b
+     method set_R x y r = m.(x).(y).r <- r
+     method set_G x y g = m.(x).(y).g <- g
+     method set_B x y b = m.(x).(y).b <- b
+   end;;
+
+
+WRITTEN EXAM 3, 19/20
+Exercise 1
+
+let inc i = i+1
+
+let is_sum a b c = 
+    let rec check_sum a1 i b1 c1 = 
+        if i = b1 then a1 = c1
+                  else check_sum (inc a1) (inc i) b1 c1
+        in check_sum a 0 b c 
+    
+
+Exercise 2
+
+type dna_syn = C | G | A | T;;
+
+type dna_array = dna_syn array;;
+
+let longest_subseq sq s = 
+    let c = ref 0
+    and max = ref 0
+    in for i = 0 to (Array.length sq)-1 do
+           if sq.(i) = s then c := !c + 1 else c := 0;
+           if !c > !max then max := !c
+       done;
+    !max;;
+
+
+Exercise 3
+
+type 'a node = {left: 'a btree; key: int; right: 'a btree}
+and 'a btree = Nil | Node of 'a node ;;
+
+let a = Node {left=Node {left=Nil; key=3; right=Nil}; key=7; 
+              right=Node {left=Nil; key=5; right=Nil}};;
+
+let rec is_heap t = match t with 
+    | Nil -> true
+    | Node {left=Nil; key=k; right=Nil} -> true
+    | Node {left=Nil; key=k; right=Node r} -> is_heap(Node r) && (k<=r.key)
+    | Node {left=Node l; key=k; right=Nil} -> is_heap(Node l) && (k<=l.key)
+    | Node {left=Node l as t1; key=k; right=Node r as t2} -> 
+         is_heap(t1) && (k<=l.key) && (k<=r.key) && is_heap(t2);;
+
+
+Exercise 4
+
+type 'a option = None | Some 'a;;
+
+module KVS = struct
+   type 'a t = (string*'a) list
+
+   let create = ([]:('a t))
+   let add s (k,v) = (k,v)::s
+   let get s r = 
+      let rec get_key = function
+         | [] -> None
+         | (k,v)::t when k = r -> Some v
+         | _::t -> get_key t
+      in get_key s 
+end;;
+
+module type KVS_ifc = 
+   sig
+      type 'a t
+
+      val create : 'a t
+      val get : 'a t -> string -> 'a option
+   end;;
+
+module Kvs = (KVS:KVS_ifc);;

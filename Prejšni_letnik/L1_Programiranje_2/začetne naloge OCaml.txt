@@ -1,0 +1,56 @@
+NALOGA 1
+a) 3.14
+b) true
+c) "arkarbar"
+d) (true, false)
+e) (6.74, 5, 'a')
+f) ['a'; 'r'; 'k';'b']
+g) ((4,5), (7,3))
+h) (0, (true, ('77',()), 5.), 6, "bro")
+i) (false, (9, (4.676, ()), 't'))
+j) ("bakaba", ("ararbar", 899), [0;9;6;64], true)
+
+NALOGA 2
+not false && true --> true && true --> true
+(true || false) || false && true --> true || false && true --> true
+
+NALOGA 3
+let a = 66;;
+let b = 33.33;;
+let c  = (float_of_int a) +. b;;
+
+NALOGA 4
+let a = 6;
+let b = 4;
+let c = a + b;;
+
+NALOGA 5
+a *. b *. c;;
+
+NALOGA 6
+let ime = "Lojzek";;
+let stevilka = 56;
+(ime, stevilka);;
+
+NALOGA 7
+if a > b then a else b;;
+
+NALOGA 8
+let malaCrka = 'e'
+let velikaCrka = char_of((int_of malaCrka) -32);;
+
+NALOGA 9
+let a = ('c', 'g');;
+let b = (5.4, 0.2);;
+let c = (fst a, snd b);;
+
+NALOGA 10
+let s1 = [1;2;3;4;5];;
+let s2 = [6;7;8;9;10];;
+let s3 = s1 @ s2;;
+List.hd s3;;
+List.tl s3;;
+
+NALOGA 11
+let s3 = [0] @ s3;;
+let s3 = s3 @ [43];;
