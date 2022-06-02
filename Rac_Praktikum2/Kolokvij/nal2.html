@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Progress bar</title>
+    <style>
+      table {
+        border-collapse: collapse;
+        border: 5px solid black;
+      }
+
+      td {
+        width: 1px;
+        height: 50px;
+        border: none;
+        padding: 0;
+        margin: 0;
+      }
+    </style>
+    <script>
+      function initTable() {
+        let row = document.getElementById("row");
+        for (let i = 0; i < 300; i++) {
+          let cell = document.createElement("td");
+          cell.id = `cell${i}`;
+          row.appendChild(cell);
+        }
+      }
+
+      function animateProgress() {
+        let interval = setInterval(frame, 10);
+        let width = 0;
+        function frame() {
+          if (width > 300) {
+            clearInterval(interval);
+          } else {
+            let cell = document.getElementById(`cell${width}`);
+            cell.style.backgroundColor = "green";
+            width++;
+          }
+        }
+      }
+
+      setTimeout(() => {
+        animateProgress();
+      }, 500);
+    </script>
+  </head>
+  <body onload="initTable()">
+    <table>
+      <tr id="row"></tr>
+    </table>
+  </body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nal1</title>
+    <style>
+      label {
+        display: inline-block;
+        width: 130px;
+        margin-bottom: 5px;
+      }
+      input {
+        width: 100px;
+      }
+      select {
+        width: 109px;
+      }
+    </style>
+    <script>
+      function isPrime(number) {
+        if (number == 1) return false;
+
+        for (let k = 2; k <= Math.floor(number / 2); k++) {
+          if (number % k == 0) return false;
+        }
+        return true;
+      }
+
+      function zbrisiIzbire(select) {
+        while (select.length > 0) {
+          select.remove(0);
+        }
+      }
+
+      function getPrimes() {
+        let primeLabel = document.getElementById("dropdown");
+        let value = document.getElementById("maxNum").value;
+        zbrisiIzbire(primeLabel);
+        for (let i = 1; i <= value; i++) {
+          if (isPrime(i)) {
+            let option = document.createElement("option");
+            option.text = i;
+            primeLabel.appendChild(option);
+          }
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <form id="form">
+      <label>Maximum number: </label>
+      <input oninput="getPrimes()" type="number" id="maxNum" />
+      <br />
+      <label>Prime numbers: </label>
+      <select id="dropdown"></select>
+    </form>
+  </body>
+</html>
