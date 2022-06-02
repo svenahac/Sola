@@ -1,0 +1,12 @@
+.playground {
+  border: none;
+  border-collapse: collapse;
+}
+
+.cell {
+  display: inline-block;
+  width: 64px;
+  height: 64px;
+  padding: 0px;
+  background-color: lightseagreen;
+}

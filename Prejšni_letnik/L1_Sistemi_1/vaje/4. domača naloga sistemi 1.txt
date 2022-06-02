@@ -1,0 +1,11 @@
+JMP main
+
+x: DW 14
+y: DW 0
+
+main:
+    MOV A, [x]
+    MUL A
+    NOT A
+    ADD A, 1
+    MOV [y], A

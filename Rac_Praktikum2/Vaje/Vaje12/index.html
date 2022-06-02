@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>RP2 JS naloga 3</title>
+    <style>
+      .panel {
+        width: 200px;
+        height: 364px;
+        border: 1px solid black;
+        text-align: center;
+        vertical-align: top;
+      }
+      .box {
+        width: 190px;
+        height: 30px;
+        background-color: orange;
+        border: 1px solid black;
+        margin: 4px;
+        text-align: center;
+        font-size: 20px;
+        line-height: 30px;
+        user-select: none;
+      }
+      .sum {
+        text-align: center;
+        font-weight: bold;
+        font-size: 20px;
+      }
+    </style>
+    <script>
+      function drag(event, number) {
+        event.dataTransfer.setData("text", number.toString());
+      }
+
+      function over(event) {
+        event.preventDefault();
+        console.log("Premik čez celico");
+      }
+
+      function drop(event, panelNum) {
+        event.preventDefault();
+        let boxNum = event.dataTransfer.getData("text");
+
+        let draggedBox = document.getElementById("box" + boxNum);
+        let targetPanel = document.getElementById("panel" + panelNum);
+        targetPanel.appendChild(draggedBox);
+      }
+    </script>
+  </head>
+  <body>
+    <table>
+      <tr>
+        <td
+          id="panel1"
+          class="panel"
+          ondragover="over(event)"
+          ondrop="drop(event,1)"
+        >
+          <div
+            id="box1"
+            class="box"
+            draggable="true"
+            ondragstart="drag(event,1)"
+          >
+            1
+          </div>
+          <div
+            id="box2"
+            class="box"
+            draggable="true"
+            ondragstart="drag(event,2)"
+          >
+            2
+          </div>
+          <div
+            id="box3"
+            class="box"
+            draggable="true"
+            ondragstart="drag(event,3)"
+          >
+            3
+          </div>
+          <div
+            id="box4"
+            class="box"
+            draggable="true"
+            ondragstart="drag(event,4)"
+          >
+            4
+          </div>
+          <div
+            id="box5"
+            class="box"
+            draggable="true"
+            ondragstart="drag(event,5)"
+          >
+            5
+          </div>
+          <div
+            id="box6"
+            class="box"
+            draggable="true"
+            ondragstart="drag(event,6)"
+          >
+            6
+          </div>
+          <div
+            id="box7"
+            class="box"
+            draggable="true"
+            ondragstart="drag(event,7)"
+          >
+            7
+          </div>
+          <div
+            id="box8"
+            class="box"
+            draggable="true"
+            ondragstart="drag(event,8)"
+          >
+            8
+          </div>
+          <div
+            id="box9"
+            class="box"
+            draggable="true"
+            ondragstart="drag(event,9)"
+          >
+            9
+          </div>
+          <div
+            id="box10"
+            class="box"
+            draggable="true"
+            ondragstart="drag(event,10)"
+          >
+            10
+          </div>
+        </td>
+        <td
+          id="panel2"
+          class="panel"
+          ondrop="drop(event,2)"
+          ondragover="over(event)"
+        ></td>
+      </tr>
+    </table>
+  </body>
+</html>

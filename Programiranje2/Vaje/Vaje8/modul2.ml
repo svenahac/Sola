@@ -1,0 +1,1 @@
+print_int (Modul1.povecaj(Modul1.kub 4))

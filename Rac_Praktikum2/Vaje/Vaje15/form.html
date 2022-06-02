@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Podatki o študentu</title>
+    <link rel="stylesheet" href="form.css" />
+  </head>
+  <body>
+    <form method="POST" action="target.html" id="obrazec">
+      <fieldset>
+        <div>
+          <label>Ime študenta:</label>
+          <input type="text" placeholder="Ime in Priimek" id="ime" />
+        </div>
+        <div>
+          <label>Datum rojstva:</label>
+          <input type="date" />
+        </div>
+        <div>
+          <label>Tel. št.:</label>
+          <input
+            type="tel"
+            placeholder="000-000-000"
+            pattern="[0-9]{3}-[0-9]{3}-[0-9]{3}"
+          />
+        </div>
+        <div>
+          <label>Elektronska pošta:</label>
+          <input
+            type="email"
+            placeholder="vpisna@student.upr.si"
+            required
+            id="email"
+          />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <div>
+          <label>Stopnja študija:</label>
+          <select onchange="izbiraLetnika()" id="stopnja">
+            <option selected></option>
+            <option>Dodiplomski študij</option>
+            <option>Magistrski študij</option>
+            <option>Doktorski študij</option>
+          </select>
+        </div>
+        <div>
+          <label>Letnik:</label>
+          <select id="letnik"></select>
+        </div>
+        <div>
+          <label>Študijski program:</label>
+          <select id="program"></select>
+        </div>
+      </fieldset>
+      <input type="reset" value="Ponastavi" onclick="ponastaviObrazec()" />
+      <input type="button" value="Potrdi" onclick="potrdiObrazec()" />
+    </form>
+    <script src="form.js"></script>
+  </body>
+</html>

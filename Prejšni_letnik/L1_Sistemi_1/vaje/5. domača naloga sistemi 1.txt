@@ -1,0 +1,40 @@
+; V zbirnem jeziku implementirajte pogojni stavek:
+; if (x % 2 == 0) {
+; x = x / 2;
+; }
+
+
+JMP main
+
+x: DW 12
+
+main:
+    MOV A, [x]
+    SHL A, 15      ; x % 2
+    CMP A, 0x8000  ; if (x % 2 != 0)
+    JE end         ; then end
+    MOV B, [x] 	   ; else (pripravi x za operacijo)
+    SHR B, 1       ; int z = x / 2 (operacija samo na vrednosti v registru)
+    MOV [x], B     ; x = z (dejanska operacija na x: x <- nova vrednost)
+
+end:
+    HLT
+
+--------------------------- ali ---------------------------
+
+JMP main
+
+x: DW 8
+
+main:
+    MOV A,[x]
+    MOV B,[x]
+    SHR A,1
+    SHL A,1
+    CMP A,B
+    JNE end
+    SHR B,1
+    MOV [x],B
+
+end:
+    HLT

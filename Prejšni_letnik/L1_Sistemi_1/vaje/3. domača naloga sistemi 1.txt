@@ -1,0 +1,27 @@
+; 1) x + y
+; 2) -(x + y)
+; 3) z = z + (-(x + y))
+
+JMP main
+
+x: DW 0x3d5a
+y: DW 0x05bc
+z: DW 0x0001
+
+
+main:
+    MOV A, [x]  ; shranimo vrednosti spremenljivk x in y v registra in ju tako pripravimo za nadaljnje operacije
+    MOV B, [y]
+    ADD A, B    ; točka 1)
+    NOT A
+    ADD A, 1    ; točka 2) dobimo negativno vsoto, ki jo zdaj prištejemo vrednosti spremenljivke z
+    MOV B, [z]   
+    ADD A, B    ; točka 3) rešitev se nahaja v registru A    
+    MOV [z], A
+    HLT
+
+
+Program deluje pravilno, saj:
+1.) ne javi napake po zagonu
+2.) vrednosti spremenljivk se pravilno naložijo v registre
+3.) program pravilno izračuna vsoto in njeno njeno nasprotno vrednost z uporabo komplementa

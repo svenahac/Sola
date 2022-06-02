@@ -1,0 +1,153 @@
+; kazalec skalda inicializiramo
+; na nek naslov nizko v pomnilniku
+MOV SP, 0xedf 
+PUSH 1 ; na vrhu sklada je 1
+PUSH 2 ; na vrhu sklada je sedaj 2
+POP A ; A <- 2
+POP B ; B <- 1
+
+--------------------------------------
+
+1. NALOGA:
+
+MOV SP, 0x0edf
+MOV A, 0xaabb
+MOV B, 0xccdd
+PUSH A
+MOV A, B
+POP B
+
+PUSH A
+PUSH B
+POP A
+POP B
+
+--------------------------------------
+
+2. NALOGA:
+
+JMP main
+
+; globalne spremenljivke
+x: DW 5
+y: DW 7
+z: DW 0
+
+main:
+	MOV SP, 0x0edf
+    MOV A, [a]
+    MOV B, [b]
+    CALL max   ; max(x,y)
+    MOV [z], A ; z = max(x,y)
+    HLT
+
+; parameter a prejme preko registra A
+; parameter b prejme preko registra B
+; rezultat vrne preko registra A
+max:
+    CMP A, B
+    JAE return
+    MOV A, B
+    RET
+    
+return: 
+    RET
+
+; CALL
+; 1.) na sklad naloži naslov nasledjega ukaza (točka povratka)
+; 2.) skoči na dani naslov - enako kot JMP 
+
+; RET
+; 1.) s sklada vzame povratni naslov
+; 2.) skoči nanj - enako kot JMP
+
+; Kako podati paramatre?
+; 1.) preko registrov
+; 2.) preko sklada
+
+***** 2. način *****
+
+JMP main
+
+; globalne spremenljivke
+x: DW 5
+y: DW 7
+z: DW 0
+
+main:
+    MOV SP, 0x0edf
+    ; izjema - PUSH lahko dvakrat dostopa do pomnilnika
+    PUSH [x]
+    PUSH [y]
+    CALL max   ; max(x,y)
+    MOV [z], A ; z = max(x,y)
+    HLT
+
+; parametra A in B prejme preko sklada
+; rezultat vrne preko registra A
+max:
+    POP D ; povratni naslov
+    POP B ; drugi parameter
+    POP A ; prvi parameter
+    PUSH D ; poratni naslov vrnemo nazaj na sklad
+    CMP A, B
+    JAE return
+    MOV A, B
+    RET
+    
+return: 
+    RET
+
+; CALL
+; 1.) na sklad naloži naslov nasledjega ukaza (točka povratka)
+; 2.) skoči na dani naslov - enako kot JMP 
+
+; RET
+; 1.) s sklada vzame povratni naslov
+; 2.) skoči nanj - enako kot JMP
+
+; Kako podati paramatre?
+; 1.) preko registrov
+; 2.) preko sklada
+
+--------------------------------------
+
+3. NALOGA: 
+
+JMP main
+
+s: DB "Hello World!"
+	DB 0
+s1: DB "How are you?"
+
+main:
+	MOV SP, 0x0edf
+    PUSH s ; parameter s (kot kazalec na prvi znak)
+    CALL print ; print(s)
+    PUSH s1
+    CALL print ; print(s1)
+	HLT
+    
+; print(s)
+; parameter s prejme preko sklada
+; ničesar ne vrača
+
+print:
+	POP D  ; povratni naslov
+    POP C  ; kazalec na niz s
+    PUSH D ; vrnemo povratni naslov na sklad
+    MOV D, display
+loop:
+    MOVB AL, [C] ; preberemo črko
+    CMPB AL, 0 ; ali je to 0?
+    JE return ; če da, potem se funkcja vrne
+	MOVB [D], AL ; ...in jo izpišemo na zaslon
+    INC C ; naslednja črka
+    INC D ; naslednja celica zaslona
+    JMP loop
+return:
+    RET
+
+ORG 0x0ee0
+display:
+

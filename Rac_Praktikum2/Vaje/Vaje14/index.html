@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Form Validation</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <form id="obrazec">
+      <fieldset>
+        <div>
+          <label for="ime">Ime Študenta: </label>
+          <input type="text" name="ime" id="ime" placeholder="Ime in Priimek" />
+        </div>
+        <div>
+          <label for="rojen">Datum rojstva: </label>
+          <input type="date" name="rojen" />
+        </div>
+        <div>
+          <label for="telefon">Telefonska številka: </label>
+          <input
+            type="tel"
+            pattern="[0-9]{3}-[0-9]{3}-[0-9]{3}"
+            name="telefon"
+            placeholder="123-456-789"
+          />
+        </div>
+        <div>
+          <label for="mail">Elektronski naslov: </label>
+          <input
+            type="email"
+            name="mail"
+            id="mail"
+            placeholder="primer@student.upr.si"
+          />
+        </div>
+      </fieldset>
+      <fieldset>
+        <div>
+          <label>Stopnja študija: </label>
+          <select id="stopnja" onchange="izbiraPrograma()">
+            <option></option>
+            <option>Dodiplomski študij</option>
+            <option>Magisterski študij</option>
+            <option>Doktorski študij</option>
+          </select>
+        </div>
+        <div>
+          <label>Študijski program: </label>
+          <select id="program"></select>
+        </div>
+      </fieldset>
+      <input type="button" value="Potrdi" onclick="preveriPodatke()" />
+    </form>
+    <script src="index.js"></script>
+  </body>
+</html>

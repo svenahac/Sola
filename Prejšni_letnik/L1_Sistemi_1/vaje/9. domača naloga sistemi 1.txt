@@ -1,0 +1,31 @@
+; Napišite funkcijo, ki vzame celoštevilski vrednosti 
+; x in y ter vrne x ^ y.
+; Funkcija naj x in y prejme
+; preko sklada, rezultat pa naj vrne preko registra A.
+
+JMP main
+
+x: DW 5
+y: DW 3
+main:
+    MOV SP, 0x0edf
+    PUSH [x]
+    PUSH [y]
+    CALL potenca
+    HLT
+    
+potenca:
+    POP D ; povratni naslov
+    POP C ; y - števec množenj
+    POP A ; x
+    MOV B, A ; x
+    PUSH D ; vrnemo povratni naslov nazaj na sklad 
+    multi:
+    CMP C, 1
+    JBE return
+    MUL B
+    DEC C
+    JMP multi
+    
+return:
+    RET

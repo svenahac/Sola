@@ -338,3 +338,226 @@ loop:
 checkdesno:
 	HLT
 ---------------------------------------------------------
+JMP main
+JMP isr
+
+vsync: DW 0 ; vsync = true (1) / false (0)
+
+isr:
+	PUSH A ; Shranimo originalno vrednost reg. A
+	; Ni potrebno preverjati, katera naprava je prožila prekinitev
+    MOV [vsync], 1 ; vsync = true
+    MOV A, 4 ; Prekinitev grafične kartice
+    OUT 2 ; IRQEOI - umaknemo zahtevo za prekinitev
+    POP A ; Ponastavimo originalno vrednost reg. A
+	IRET
+    
+; Funkcija wait_vsync() čaka na signal vysnc
+wait_vsync:
+wait_vsync_loop:
+	MOV A, [vsync] ; Vrednost globalne spremenljivke vsync
+    CMP A, 0 ; Ali je še vedno false?
+    JE wait_vsync_loop
+    DEC C ; Odštejemo en signal vsync
+    MOV [vsync], 0 ; Zastavica je prebrana, zato jo umaknemo
+    CMP C, 0 ; Ali je count že na 0
+    JNE wait_vsync_loop ; Če ni, čakamo naprej
+    RET
+
+main:
+	MOV SP, 0x0FFF ; Inicializacija sklada
+	MOV A, 1 ; Številka besedilnega načina
+    OUT 7 ; VIDMODE
+    MOV A, 14 ; 7. stolpec, 1. vrstica
+    OUT 8 ; VIDADDR
+    MOV A, 0xFFFF ; Krožec bele barve
+    OUT 9 ; Izrišemo simbol
+    
+    ; Omogočimo prekinitve grafični kartici
+    MOV A, 4 ; Št. prekinitve za grafično kartico
+    OUT 0 ; IRQMASK
+    STI ; Omogočimo prekinitve globalno
+    
+    ; Počakamo 2 sekundi
+    MOV C, 100 ; Čakamo 100 signalov vsync
+    CALL wait_vsync ; wait_vsync(100)
+    
+    ; Animacija padanja
+    MOV D, 14 ; Začeten položaj krožca
+    
+animation_loop:
+    MOV A, D    ; Trenutni položaj
+    OUT 8        ; Aktiviramo celico
+    MOV A, 0    ; Prazen prostor.
+    OUT 9        ; Pobrišemo krožec
+    ADD D, 256    ; Premaknemo se v novo vrstico.
+    CMPB DH, 16 ; Ali smo že v 16. vrstici
+    JB noreset
+    MOV D, 14 ; Krožec postavimo nazaj na vrh
+noreset:
+    MOV A, D    ; Novi položaj
+    OUT 8        ; Aktiviramo celico
+    MOV A, 0xFFFF ; krožec bele barve.
+    OUT 9        ; izrišemo
+    MOV C, 25
+    CALL wait_vsync ; wait_vsync(25)
+    JMP animation_loop
+    HLT   
+---------------------------------------------------------
+JMP main
+JMP isr
+
+vsync: DW 0 ; vsync = true (1) / false (0)
+
+isr:
+	PUSH A ; Shranimo originalno vrednost reg. A
+	; Ni potrebno preverjati, katera naprava je prožila prekinitev
+    MOV [vsync], 1 ; vsync = true
+    MOV A, 4 ; Prekinitev grafične kartice
+    OUT 2 ; IRQEOI - umaknemo zahtevo za prekinitev
+    POP A ; Ponastavimo originalno vrednost reg. A
+	IRET
+    
+; Funkcija wait_vsync() čaka na signal vysnc
+wait_vsync:
+wait_vsync_loop:
+	MOV A, [vsync] ; Vrednost globalne spremenljivke vsync
+    CMP A, 0 ; Ali je še vedno false?
+    JE wait_vsync_loop
+    DEC C ; Odštejemo en signal vsync
+    MOV [vsync], 0 ; Zastavica je prebrana, zato jo umaknemo
+    CMP C, 0 ; Ali je count že na 0
+    JNE wait_vsync_loop ; Če ni, čakamo naprej
+    RET
+
+str: DB "The Light at the End of the World"
+	 DB 0
+
+main:
+	MOV SP, 0x0FFF ; Inicializacija sklada
+	MOV A, 1 ; Številka besedilnega načina
+    OUT 7 ; VIDMODE
+    
+    ; Izpišemo niz "str" na lokacijo (16,7)
+    MOV C, str ; Kazalec na niz ki ga izpisujemo
+    MOV D, 0x0720 ; Naslov celice (16,7)
+
+loop_str:
+	MOV A, D ; Aktiviramo trenutno celico
+    OUT 8
+	MOVB AH, [C] ; Trenutna črka
+    CMPB AH, 0 ; Ali smo že na koncu niza
+    JE loop_str_break
+    MOVB AL, 252 ; Rumena
+    OUT 9 ; Izpišemo črko
+    INC C ; Naslednja črka
+    ADD D, 2 ; Naslednja celica
+    JMP loop_str
+ 
+loop_str_break:
+	
+    ; Omogočimo prekinitve grafični kartici
+    MOV A, 4 ; Št. prekinitve za grafično kartico
+    OUT 0 ; IRQMASK
+    STI ; Omogočimo prekinitve globalno
+    
+    ; Animacija premikanja besedila
+    
+animation_loop:
+	MOV A, 0xA302 ; Naslov za horizontalni odmik
+    OUT 8 ; VIDADDR (Trenutna vrednost se pojavi v reg. VIDDATA)
+    IN 9 ; VIDDATA preberemo v reg. A
+    ADD A, 2 ; Odmik povečamo za dva piksel
+    CMP A, 784 ; Če še ni smo prišli do odmika
+    JB no_window_reset ; Ne ponastavimo okna
+    MOV A, 0
+no_window_reset:
+    OUT 9 ; Zapišemo nazaj v 0xA302
+    MOV C, 1
+    CALL wait_vsync ; wait_vsync(25)
+    JMP animation_loop
+    HLT
+---------------------------------------------------------
+JMP main
+
+str: DB "ABBA\x00"
+
+ghost:
+	DB "\x00\x00\x03\xC0\x0F\xF0\x1F\xF8\x33\xCC\x21\x84\x2D\xB4\x6D\xB6"
+	DB "\x73\xCE\x7F\xFE\x7F\xFE\x7F\xFE\x7F\xFE\x7B\xDE\x31\x8C\x00\x00"
+
+main:
+	MOV A, 1
+    OUT 7
+    
+    MOV C, str
+    MOV D, 0
+loop_str:
+	MOV A, D
+    OUT 8
+    MOVB AH, [C]
+    CMPB AH, 0
+    JE loop_str_break
+    MOVB AL, 255
+    OUT 9
+    INC C
+    ADD D, 2
+    JMP loop_str
+    
+loop_Str_break:
+	; Prekopirajmo definicijo duhca iz RAM-a (labela ghost) v
+    ; VRAM od naslova 0x88220 dalje (32 bytov), čez črko "A"
+    MOV C, ghost ; Kazalec na duhca
+    MOV D, 0x8820 ; Kazalec na VRAM, kjer je črka "A"
+    MOV B, 16 ; Števec že prekopiranih zlogov (bytov)
+loop_ghost:	
+	CMP B, 0 ; Ali smo že prekopirali vseh 16 besed
+    JE loop_ghost_break
+    MOV A, D ; Trenutni naslov v VRAM-u
+    OUT 8 ; Aktiviramo 
+    MOV A, [C] ; Trenutna beseda v RAM-u
+    OUT 9 ; Prepišemo
+    ADD C, 2 ; Naslednja beseda v RAM-u
+    ADD D, 2 ; Naslednji naslov v VRAM-u
+    DEC B ; Zmanjšamo števec besed
+    JMP loop_ghost
+    
+loop_ghost_break:
+	HLT
+---------------------------------------------------------
+JMP main
+
+main:
+	MOV A, 1
+    OUT 7
+    
+    ; Izpišimo 100 črk A
+    MOV C, 100 ; Števec
+ 	
+loop_a:
+	CMP C, 0 ; Ali smo že izspisali vseh 100 črk
+    JE break_a
+	IN 10 ; Naključno 16-bit število v reg. A
+    AND A, 0x0F1E
+	OUT 8 ; Aktiviramo naključen naslov v VRAM-u
+    MOV A, 0x41E0 ; Črka A rdeče barve
+    OUT 9 ; Izpišemo 
+    DEC C ; Zmanjšamo števec
+    JMP loop_a
+ 
+break_a:
+	; Redefinirajmo barvo 224
+    MOV A, 0xA2A0
+    OUT 8 ; Aktiviramo lokacijo z rdečo in zeleno komponento
+    MOV A, 0xFF00 ; Nova definicija rdeče in zelene komponente
+    OUT 9 ; Prepišemo v VRAM-u
+    MOV A, 0xA2A1
+    OUT 8 ; AKtiviramo lokacijo z modro in zeleno komponento
+    MOV A, 0x00FF ; Nova definicija modre in zelene komponente
+    OUT 9 ; Prepišemo v VRAM-u
+    HLT
+---------------------------------------------------------
+
+---------------------------------------------------------
+
+---------------------------------------------------------

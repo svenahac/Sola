@@ -1,0 +1,101 @@
+Definirajte dve 16-bitni spremenljivki x in y ter ju inicializirajte s poljubnima
+vrednostima. Napišite program, ki izračuna x = x ∗ y.
+
+JMP main
+
+x: DW 5 ; int x = 5
+y: DW 3 ; int y = 3
+
+main:
+    MOV A, [x]
+    MOV B, [y]
+    MUL B
+    MOV [x], A
+    HLT
+
+-----------------------------------------------------------------------------------
+
+Naj bodo spremenljivke x, y in z 16-bitnega celoštevilskega tipa. Napišite program,
+ki izračuna z = x − y/4.
+Kaj lahko povemo o dobljenem rezultatu?
+
+JMP main
+
+x: DW 15
+y: DW 18
+z: DW 0
+
+main:
+	MOV A, [x]
+    MOV B, [y]
+    SHR B, 2	; B <- y/4
+    SUB A, B	; A<- x - y/4
+    MOV [z], A	;z = x - y/4
+    HLT
+
+-----------------------------------------------------------------------------------
+
+Rešite prejšnjo nalogo tako, da ne pride do izgube natančnosti.
+
+JMP main
+
+; Uporabimo fiksno  vejico ______________.__
+; Zadnja dva bita lahko zapišemo do 1/4 natančno.
+; Natančnosti si sledijo: 16 8 4 2 1 | 0.5 0.25
+; Pretvorba iz celoštevilskega formata (integer) v zapis s fiksno vejico 
+; 14/2 je preko množenja s 4.
+
+; Rezultat je 0x002A Ali je to OK?
+; 0000 0000 0010 10.10
+; 2 + 8 + 0.5 = 10.5
+
+x: DW 60 ; x = 15.0 (* 4)
+y: DW 72 ; y = 18.0 (* 4)
+z: DW 0  ; z = 15 - 18/4 = 15 - 4.5 = 10.5 = ??
+
+main:
+	MOV A, [x]
+    MOV B, [y]
+    SHR B, 2	; B <- y/4
+    SUB A, B	; A<- x - y/4
+    MOV [z], A	; z = x - y/4
+    HLT
+
+-----------------------------------------------------------------------------------
+
+Napišite program, ki izračuna x = abs(x).
+
+JMP main
+
+x: DW 0xFFFF ; ine x = -1
+; x: DW 1 ; int x = 1
+
+; ekskluzivni ALI
+; XOR
+; 0 0 | 0
+; 0 1 | 1
+; 1 0 | 1
+; 1 1 | 0
+; XOR maska je pogojna negacija
+
+; 1. Kakšen je predznak?
+; 2. Predznak spremenimo v XOR masko.
+;	 1 -> 11111111...1
+; 	 0 -> 00000000...0
+;	 možnost 1.) množimo z 0xFFFF
+;	 možnost 2.) 0 - predznak
+; 3. Eniški komplement (pogojno) - NOT (XOR)
+; 4. Dvojiški komplement (pogojno) s prištevanjem 1
+
+main:
+	MOV A, [x]
+    MOV B, A  ; Obdržimo originalno vrednost.
+    SHR B, 15 ; Predznak vrednosti x.
+    MOV C, 0  ; Pripravimo za pretvorbo predznaka v masko.
+    SUB C, B  ; Pretvorba: C <- 0-B.
+    XOR A, C  ; Eniški komeplement (pogojni)
+    ADD A, B  ; Dvojiški komplement (pogojni)
+    MOV [x], A
+    HLT
+
+-----------------------------------------------------------------------------------

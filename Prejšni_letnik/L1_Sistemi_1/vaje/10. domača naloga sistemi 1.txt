@@ -1,0 +1,39 @@
+; int gcd(int x, int y){
+;    if (y == 0)
+;       return x;
+;    return gcd(y, x % y);
+; }
+
+
+JMP main
+
+x: DW 24
+y: DW 16
+z: DW 0
+
+main:
+    MOV SP,0x0edf
+    MOV A,[x]
+    MOV B,[y]
+    CALL gdc
+    MOV [z], A
+    HLT
+
+gdc:
+    CMP B,0
+    JE return
+    MOV C, B ; ohranimo y
+    CALL remainder
+    MOV B, A ; menjamo vrednosti v registrih in
+    MOV A, C ; ohranimo y
+    JMP gdc
+    
+    
+remainder:
+    CMP A,B
+    JB return
+    SUB A,B
+    CALL remainder
+    
+return:
+    RET

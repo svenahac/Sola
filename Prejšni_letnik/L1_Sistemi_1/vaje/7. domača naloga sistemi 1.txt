@@ -1,0 +1,22 @@
+JMP main
+
+pointer: DW 0x016F
+zacetek: DW 0
+stevil: DW 1000
+
+
+main:
+    MOV C, [pointer]	; hrani trenutni pointer
+	MOV D, [zacetek]	; hrani število obdelanih števil
+    
+loop:
+	MOV [C], A 
+    ADD C, 2
+    ADD A, 2
+    ADD D, 1
+    CMP D, [stevil]
+    JA end
+    JMP loop
+        
+end:
+    HLT

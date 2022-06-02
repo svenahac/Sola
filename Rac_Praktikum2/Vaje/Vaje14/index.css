@@ -1,0 +1,27 @@
+div {
+  margin-bottom: 5px;
+}
+
+fieldset {
+  margin-bottom: 5px;
+}
+
+label {
+  display: inline-block;
+  width: 160px;
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="date"],
+input[type="email"] {
+  width: 200px;
+}
+
+select {
+  width: 210px;
+}
+
+input:invalid {
+  background-color: rgba(255, 0, 0, 0.5);
+}

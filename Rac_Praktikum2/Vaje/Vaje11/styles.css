@@ -1,0 +1,38 @@
+#number {
+  width: 200px;
+  height: 100px;
+  background-color: yellow;
+  border: 2px solid black;
+  font-size: 80px;
+  line-height: 100px;
+  text-align: center;
+  color: red;
+}
+
+#buttons {
+  width: 200px;
+  text-align: center;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+button {
+  width: 60px;
+}
+
+#playground {
+  width: 200px;
+  height: 150px;
+  background-color: yellow;
+  border: 2px solid black;
+}
+
+#ball {
+  position: relative;
+  background-color: blue;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  top: 50px;
+  left: 50px;
+}

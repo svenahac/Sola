@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      table {
+        border-collapse: collapse;
+      }
+      td {
+        width: 40px;
+        height: 40px;
+        border: 1px solid black;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body onload="buildTable(10, 10)">
+    <table id="numbers"></table>
+    <p>
+      width:
+      <input type="number" size="5" value="10" id="width" />
+      height:
+      <input type="number" size="5" value="10" id="height" />
+      <button onclick="refreshTable()">Refresh</button>
+    </p>
+    <script src="index.js"></script>
+  </body>
+</html>

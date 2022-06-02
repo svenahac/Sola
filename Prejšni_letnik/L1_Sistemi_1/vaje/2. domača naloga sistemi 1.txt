@@ -1,0 +1,8 @@
+; x = 65, y = 227
+
+MOV A, 65
+MOV B, 227
+
+SHL A, 8
+MOVB AL, BL
+MOVB BL, 0

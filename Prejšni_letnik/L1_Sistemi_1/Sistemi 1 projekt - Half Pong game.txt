@@ -1,0 +1,227 @@
+; HALF PONG GAME
+; ANDREJ ERJAVEC
+; 89201090
+; RIN 1
+; MAJ 2021
+
+; IGRO SE POGANJA PRI 64 kHZ
+; LOPARČEK PREMIKAMO V DESNO S TIPKO '6' NA TIPKOVNICI
+; IN V LEVO S TIPKO '5' NA TIPKOVNICI
+; CILJ JE OBDRŽATI ŽOGICO V GIBANJU ČIM DLJE ČASA
+; ŽOGICA SE ODBIVA OD STEN IN OD LOPARČKA
+; OB PADCU NA TLA JE IGRE KONEC
+
+JMP main
+
+text_display: DW 0x0ee0
+
+ball_start_pos: DW 0x090d
+paddle_start: DW 0x080f
+paddle_end: DW 0x0b0f
+vector: DW 0x0101
+message: DB "Game Over!" 
+		 DB 0
+
+; vector
+; 0101 -> down, right
+; FF01 -> down, left
+; FFFF -> up, left
+; 01FF -> up, right
+
+
+; set_pixel(x, y)
+; x (0 - 15) - prenašamo preko AH
+; y (0 - 15) - prenašamo preko AL
+; D hrani pravo vrednost piksla na zaslonu
+set_pixel:
+	; speed limiter
+	MOV C, 0
+    loop:
+    INC C
+    CMP C,0x0300
+    JB loop
+    
+    PUSH A				; Shranimo pozicijo žoge
+    MOVB [D], 0x00		; Resetiramo prejšnji piksel
+    MOV D, 0			; Izpraznimo D za nov zapis
+
+	; naslov pike = display + x + 16y
+    MOVB DL, AL        	; DL <- y
+    SHL D, 4           	; D <- 16y
+    SHR A, 8           	; A <- x
+    ADD D, A           	; D <- 16y + x
+    ADD D, display     	; D <- display + (x + 16y)
+    MOVB [D], 0x77     	; Zapišemo barvo na lokacijo (x, y).
+    POP A				; Povrni podatek o poziciji žoge
+    JMP check_button_press
+
+check_button_press:
+	PUSH B				; Shranimo vektor
+	PUSH A				; Shranimo pozicijo žoge
+    MOV A, 0			; Izpraznimo A
+    IN 5				; Ali je pritisnjena tipka?
+    CMP A, 0			; Če ni, ...
+    JE check_colision	; Nadaljuj z izvajanjem
+    IN 6				; Če je pritisnjena, ...				
+    CMP A, 0x0035		; Ali je pritisnjena 5?
+    JE move_left		; Če je, premakni levo
+    CMP A, 0x0036		; Ali je pritisnjena 6?
+    JE move_right		; Če je, premakni desno
+    JMP check_colision
+    
+move_left:
+	MOV C, 1				; "koda" za premik v levo
+    MOV A, [paddle_start]
+    MOV B, [paddle_end]
+    CMPB AH, 0				; Ali je loparček max na levo? (prvi piksel)
+    JE check_colision		; Če je, ne premaknemo in nadaljujemo
+    						; Če ni, ...
+	DECB AH					; pomik prvega piksla levo
+    DECB BH					; pomik zadnjega piksla levo
+    MOV [paddle_start], A 	; Spremenimo začetek
+    MOV [paddle_end], B		; Spremenimo konec
+    CALL set_paddle			; Izrišemo na novo pozicijo
+    JMP check_colision		; Nadaljujemo z izvajanjem
+    
+move_right:
+	MOV C, 2				; "koda" za premik v desno
+    MOV A, [paddle_start]
+    MOV B, [paddle_end]
+    CMPB BH, 15				; Ali je loparček max na desno? (zadnji piksel)
+    JE check_colision		; Če je, ne premaknemo in nadaljujemo
+    						; Če ni, ...
+	INCB AH					; pomik prvega piksla desno
+    INCB BH					; pomik zadnjega piksla desno
+    MOV [paddle_start], A 	; Spremenimo začetek
+    MOV [paddle_end], B		; Spremenimo konec
+    CALL set_paddle			; Izrišemo na novo pozicijo
+    JMP check_colision		; Nadaljujemo z izvajanjem		
+	
+	
+; nastavi naslednjo pozicij žoge
+; odvisna od smernega vektorja
+increase: 
+    ADDB AH, BH
+    ADDB AL, BL
+    JMP set_pixel
+
+check_colision:
+	POP A				; Povrni podatek o poziciji žoge
+    POP B				; Povrnemo vektor
+    CMPB AL, 15			; Ali smo na tleh?
+    JE game_over		; Če pademo na tla, je konec igre
+    CMPB AL, 14			; Ali smo na višini loparčka?
+    JE paddle_bounce_check	
+    CMPB AL, 0			; Ali smo na stropu?
+    JE ceiling_bounce	
+    
+  check_colision_second:
+    CMPB AH, 0			; Ali smo na levi steni?
+    JE wall_bounce
+    CMPB AH, 15			; Ali smo na desni steni?
+    JE wall_bounce
+    JMP increase
+  	
+    
+
+; Spemenimo smerni vektor glede na pozicijo
+wall_bounce:
+    NOTB BH
+    ADDB BH, 1
+    JMP increase 	; Ali smo celo v kotu?
+
+paddle_bounce_check:
+	MOV C, [paddle_start]
+	CMPB AH, CH					; Če je žoga levo čez loparček, ...
+    JB check_colision_second					; ... ne bo odboja
+    MOV C, [paddle_end]
+    CMPB AH, CH					; Če je žoga desno čez loparček, ...
+    JA check_colision_second					; ... ne bo odboja
+    							; Če ni nič od tega, ...
+    JMP paddle_bounce			; ... je na loparčku in se odbije
+    
+paddle_bounce:
+	NOTB BL
+    ADDB BL, 1
+    JMP check_colision_second	
+
+ceiling_bounce:
+    NOTB BL
+    ADDB BL, 1
+    SUBB BH, 1
+    JMP check_colision_second
+    
+left_remove:
+	; odstraniti moramo desno piko
+    PUSH D				; shranimo naslov loparčka za display
+    ADD D, 3
+    MOV [D], 0x00		; jo izbrišemo
+    POP D				; povrnemo naslov loparčka za display
+    JMP draw_paddle_loop
+    
+right_remove:
+	; odstraniti moramo levo piko
+    PUSH D				; shranimo naslov loparčka za display
+    ADD D, 0xffff		; odštejemo 1
+    MOV [D], 0x00		; jo izbrišemo
+    POP D				; povrnemo naslov loparčka za display
+    JMP draw_paddle_loop	
+
+; podatke dobi iz:
+; paddle_start -> reg. A
+; paddle_end -> reg. B
+set_paddle:
+	PUSH D				; Shranino reg. D - hrani naslov žoge za display
+	MOV D, 0			; resetiramo D
+    PUSH A				; shranimo začetek loparčka
+    MOVB DL, AL        	; izračunamo naslov za display
+    SHL D, 4           
+    SHR A, 8           
+    ADD D, A           
+    ADD D, display
+    POP A
+    CMP C, 1			; ali želimo premik v levo?
+    JE left_remove
+    CMP C, 2			; ali želimo premik v desno?
+    JE right_remove
+    
+  draw_paddle_loop:
+    MOVB [D], 0xff 		; izrišemo piko loparčka na zaslon    
+    INCB DL				; naslednja pika
+    INCB AH
+    CMP A, B			; smo že na koncu loparčka?
+    JBE draw_paddle_loop 
+    POP D				; povrni naslov žoge v reg.D
+	RET
+
+print:
+	MOV C, message
+  	MOV D, [text_display]
+    MOV A, 0
+print_loop:
+  	MOVB AL, [C] ; preberemo črko
+  	CMPB AL, 0 ; ali je to 0?
+  	JE return ; če da, potem se funkcja vrne
+	MOVB [D], AL ; ...in jo izpišemo na zaslon
+  	INC C ; naslednja črka
+  	INC D ; naslednja celica zaslona
+  	JMP print_loop
+return:
+  	RET
+
+game_over: 
+  	CALL print
+    HLT
+
+main:
+    MOV SP, 0x0edf
+	MOV A, [paddle_start]
+    MOV B, [paddle_end]
+    CALL set_paddle  			; Izrišemo loparček
+	MOV A, [ball_start_pos]
+    MOV B, [vector]     		; smerni vektor za x in y
+    JMP set_pixel				; Izrišemo žogo
+
+
+ORG 0x0f00
+display: 

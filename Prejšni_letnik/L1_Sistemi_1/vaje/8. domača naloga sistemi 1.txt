@@ -1,0 +1,36 @@
+JMP main
+
+; najprej definiramo niz, ki se konča z 0 - da vemo, kje je konec
+ime: 
+DB "Andrej"
+DB 0
+
+main:
+    MOV C, ime	    ; shranimo kazalec na začetni niz
+    MOV D, display  ; shranimo kazalec na ciljni niz
+
+; loop bere črko za črko dokler ne pride do konca - do 0
+loop:
+    MOVB AL, [C]    ; v AL je zdaj ena znak niza
+    CMPB AL, 0      ; ali smo že na koncu niza ?
+    JE break        ; če ja, potem končamo
+    CMPB AL, 97     ; male črke po ASCII se začnejo pri 97
+    JAE velika      ; če je >= 97 -> mala črka -> jo spremenimo
+    naprej:
+    MOVB [D], AL    ; Prekopiramo znak na display
+    INC C           ; premaknemo se za 1 naprej po začetnem nizu
+    INC D           ; premaknemo se za 1 naprej po ciljnem nizu
+    JMP loop
+    
+velika:
+    CMP A, 123
+    JAE naprej
+    SUB A, 32       ; -> malo črko pretvorimo v veliko - uporaba ASCII
+    JMP naprej      ; -> vrnemo se nazaj in nadaljujemo
+    
+break:
+    HLT
+    
+ORG 0x0EE0
+
+display:
