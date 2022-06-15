@@ -5,44 +5,6 @@ start: DB "Izberi operacijo a s m d        "
 prvo: DB "Vnesi prvo stevilo"
 drugo: DB "Vnesi drugo stevilo"
 
-isr:
-	PUSH A
-    IN 5 ; preberemo KBDSTATUS
-    CMP A, 1 ; Ali je keydown?
-    JNE keyup ; če ni, skoči na keyup
-    MOVB BL, 1 ; Eno od štirih tipk bom nastavil na true
-    JMP setkey
-
-keyup:
-	MOVB BL, 0 ; Pritisnjeno tipko bom nastavil na false
-setkey:
-	IN 6 ; Katera tipka je bila pritisnjena?
-    CMPB AL, '8' ; Ali je bila 8?
-    JNE check2 ; Če ne preveri tipko 2
-;    MOVB [gor], BL ; spremenim  stanje tipke gor
-    JMP done
-check2:
-	CMPB AL, '2'
-    JNE check4
-    MOV C, prvo
-    CALL print_prvo
-    JMP done
-    
-check4:
-	CMPB AL, '4'
-    JNE check6
-  ;  MOVB [levo], BL
-    JMP done
-    
-check6:
-	CMPB AL, '6'
-    JNE done
-   ; MOVB [desno], BL
-    
-done:
-	MOV A, 1 ; Umaknemo zahtevo po prekinitvi
-    OUT 2
-	IRET
 
 main:
 	MOV SP, 0x0FFF ; Inicializacija sklada
@@ -120,4 +82,232 @@ loop:
     JMP loop ; Otherwise , read the value again .
 break:
 	CLI ; Disable interrupts .
-    HLT
+    
+    
+----------------------------------------------------
+; Basic work
+JMP main
+
+main:
+	MOVB [0x1000], '>'
+	MOVB [0x100F], '@'
+    MOV B, 0x1000
+    MOV C, 14
+loop:
+    CMP C, 0
+    JE loop_break
+    DEC C
+    JMP move
+    JMP loop
+
+move:
+	MOVB [B], ' '
+    INC B
+    MOVB [B], '>'
+	JMP loop
+    
+loop_break:
+	HLT
+
+----------------------------------------------------
+; Bolj zahtevna
+JMP main
+
+
+arrow: DB " >>-->"
+	   DB 0
+       
+end: DB "Bullseye"
+	 DB 0
+
+print:
+	PUSH A
+    PUSH C
+    MOV C, 0
+.loop:
+	MOVB AL, [B]
+    MOVB [D], AL
+    INC B
+    INC D
+    CMPB CL, [B]
+    JNZ .loop
+    
+    POP C
+    POP A
+    RET
+
+main:
+	MOV SP, 0x0FFF
+	MOVB [0x100F], '@'
+    MOV A, 0x1000
+    MOV C, 10
+loop:
+	MOV D, A
+    CMP C, 0
+    JE loop_break
+    DEC C
+    JMP move
+
+move:
+	MOV B, arrow
+	CALL print
+    INC A
+	JMP loop
+    
+loop_break:
+	MOV B, end
+    MOV D, 0x1010
+    CALL print
+	HLT
+
+-------------------------------
+; Z prekinitvami
+JMP main
+JMP isr
+
+quit: DW 0 ; quit = false
+
+arrow: DB " >>-->"
+	   DB 0
+       
+end: DB "Bullseye"
+	 DB 0
+
+isr:
+	PUSH B
+    PUSH D
+    
+   	MOV D, C
+    MOV B, arrow
+	CALL print
+    INC C
+    MOV B, 0
+    MOVB BL, [0x100E]
+    CMPB BL, '>'
+    JNE done
+    MOV [quit], 1
+
+print:
+	PUSH A
+    PUSH C
+    MOV C, 0
+.loop:
+	MOVB AL, [B]
+    MOVB [D], AL
+    INC B
+    INC D
+    CMPB CL, [B]
+    JNZ .loop
+    
+    POP C
+    POP A
+    RET
+
+main:
+	MOV SP, 0x0FFF
+	MOVB [0x100F], '@'
+    MOV B, arrow
+    MOV D, 0x1000
+    CALL print
+    MOV C, 0x1000
+    MOV B , 5000 ; 1 second = 5000 clock cycles .
+    OUT 3 ; Preset the timer to 5000.
+    MOV B , 2 ; Timer interrupt mask .
+    OUT 0 ; Set the mask .
+    STI ; Enable interrupts .
+loop:
+	MOV B, [quit]
+    CMP B, 1
+    JE break
+    JMP loop
+    
+done:
+    MOV B , 2 ; Timer interrupt mask .
+    OUT 2 ; Timer has been serviced .
+    POP D
+    POP B ; Restore the register A .
+    IRET ; Return from ISR .
+    
+    MOV B, end
+    MOV D, 0x1010
+    CALL print
+
+break:
+	CLI
+    
+---------------------------------------
+; Program se poganja pri 5kHz
+
+JMP main
+JMP isr
+
+quit: DW 0 ; quit = false
+
+arrow: DB " >>-->"
+	   DB 0
+       
+end: DB "Bullseye"
+	 DB 0
+
+isr:
+	PUSH A
+    PUSH D
+    
+   	MOV D, C
+    MOV A, arrow
+	CALL print
+    INC C
+    MOV A, 0
+    MOVB AL, [0x100F]
+    CMPB AL, '>'
+    JNE done
+    
+    MOV [quit], 1
+
+print:
+	PUSH B
+    PUSH C
+    MOV C, 0
+.loop:
+	MOVB BL, [A]
+    MOVB [D], BL
+    INC A
+    INC D
+    CMPB CL, [A]
+    JNZ .loop
+    
+    POP C
+    POP B
+    RET
+
+main:
+	MOV SP, 0x0FFF
+	MOVB [0x100F], '@'
+    MOV A, arrow
+    MOV D, 0x1000
+    CALL print
+    MOV C, 0x1000
+    MOV A , 5000 ; 1 second = 5000 clock cycles .
+    OUT 3 ; Preset the timer to 5000.
+    MOV A , 2 ; Timer interrupt mask .
+    OUT 0 ; Set the mask .
+    STI ; Enable interrupts .
+loop:
+	MOV A, [quit]
+    CMP A, 1
+    JE break
+    JMP loop
+    
+done:
+    MOV A , 2 ; Timer interrupt mask .
+    OUT 2 ; Timer has been serviced .
+    POP D
+    POP A ; Restore the register A .
+    IRET ; Return from ISR .
+    MOV A, end
+    MOV D, 0x1010
+    CALL print
+
+break:
+	CLI
+    

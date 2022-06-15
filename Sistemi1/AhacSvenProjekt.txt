@@ -1,0 +1,76 @@
+; Sven Ahac - 89211304
+; RIN 1. Letnik
+; Program se poganja pri 5kHz
+
+JMP main
+JMP isr
+
+quit: DW 0 ; quit = false
+
+arrow: DB " >>-->"
+	   DB 0
+       
+end: DB "Bullseye        "
+	 DB 0
+
+isr:
+	PUSH A
+    PUSH D
+    
+   	MOV D, C
+    MOV A, arrow
+	CALL print
+    INC C
+    MOV A, 0
+    MOVB AL, [0x100F]
+    CMPB AL, '>'
+    JNE done
+    MOV [quit], 1
+
+print:
+	PUSH B
+    PUSH C
+    MOV C, 0
+.loop:
+	MOVB BL, [A]
+    MOVB [D], BL
+    INC A
+    INC D
+    CMPB CL, [A]
+    JNZ .loop
+    
+    POP C
+    POP B
+    RET
+
+main:
+	MOV SP, 0x0FFF
+	MOVB [0x100F], '@'
+    MOV A, arrow
+    MOV D, 0x1000
+    CALL print
+    MOV C, 0x1000
+    MOV A , 5000 ; 1 second = 5000 clock cycles .
+    OUT 3 ; Preset the timer to 5000.
+    MOV A , 2 ; Timer interrupt mask .
+    OUT 0 ; Set the mask .
+    STI ; Enable interrupts .
+loop:
+	MOV D, [quit]
+    CMP D, 1
+    JE break
+    JMP loop
+    
+done:
+    MOV A , 2 ; Timer interrupt mask .
+    OUT 2 ; Timer has been serviced .
+    POP D
+    POP A ; Restore the register A .
+    IRET ; Return from ISR .
+    
+
+break:
+	CLI
+    MOV A, end
+    MOV D, 0x1000
+    CALL print
