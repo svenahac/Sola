@@ -151,3 +151,4 @@ let asistent1 = new asistent "Tone" "Kladivo" 3 1700 "Joze";;
 asistent1#predstavi;;
 asistent1#predstavi_vse;;
 
+
