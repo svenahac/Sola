@@ -1,0 +1,27 @@
+
+1.
+a) SELECT * FROM Gora WHERE visina >= 2000;
+b) SELECT vrh FROM Gora WHERE vrh LIKE "S%" AND NOT "%Gora%";
+c) SELECT vrh,datum FROM Pohod WHERE datum >= '2018-09-23' AND datum < '2018-12-21';
+d) SELECT ime,priimek FROM Vodič ORDER BY letaizkusenj DESC limit 5; 
+e) SELECT AVG(visina) FROM Gora GROUP BY gorovje;
+f) SELECT Vodič.ime FROM Vodič,Pohod,Gora WHERE Gora.koca == 0;
+
+2.
+a) ∏ ime, priimek(Vodič) -  ∏ ime, priimek (σ Pohod.idvodic == Vodič.idvodic (Pohod ⋈ Vodič))
+
+b)
+ρ(Temp1, ∏ idvodic (σ letaizkusenj ≥ 5 (Vodič) ))
+ρ(Temp2, ∏ idvodic (σ velikostskupine ≥ 30 (Pohod))
+∏ ime, priimek (Temp1 ∩ Temp2)
+
+c) ∏ gorovje U ∏ count(vrh ⋈ gorovje)
+
+3.
+a) {<GVr>|<GVr,GVi,GK> ∈  Gora ∧ GVi > 1800 ∧ GK = 1}
+
+b) {<VP>|<VP> ∈ Vodič ∧ ꓱ PD, PVr(<PD,PVr> ∈ Pohod ∧ PD = '2022-05-01' ∧ PVr = "Triglav")}
+
+c) {<VP>|<VP,VId> ∈ Vodič ∧ ¬(ꓱ PI(<PI> ∈ Pohod ∧ VId = PI))}
+
+  

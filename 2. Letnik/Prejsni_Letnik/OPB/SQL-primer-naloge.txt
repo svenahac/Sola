@@ -1,0 +1,25 @@
+Z uporabo SQL izpiši podatke o računih iz katerih so več kot 20 krat v letu 2018
+dvignili znesek večji od 10.000 EUR.
+
+SELECT *
+FROM Racun,(
+  SELECT rid, COUNT(rid) AS count
+  FROM Dvig
+  WHERE datum >= '1/1/2018' AND datum <= '31/12/2018' AND znesek > 10000
+  GROUP BY rid
+) AS Group
+WHERE count > 20 AND Racun.rid = Group.rid
+
+-------------------------------------------------------------------------------------
+
+Write an SQL query that prints the names and identifiers of the suppliers and the
+aggregate value of their orders for the suppliers that supplied in the year 2020 the
+products with the aggregate value grater than 500.000 EUR.
+
+SELECT Supplier.sid, Supplier.name
+FROM Supplier, (
+  SELECT sid, SUM(price) AS sum
+  FROM Products, Orders
+  WHERE Products.pid = Orders.pid
+  GROUP BY Orders.sid) AS group
+WHERE group.sum > 500000 AND Supplier.sid = Group.sid

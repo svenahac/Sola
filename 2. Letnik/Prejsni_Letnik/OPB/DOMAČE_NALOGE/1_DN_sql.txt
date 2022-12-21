@@ -1,0 +1,74 @@
+1. DEL
+a)
+SELECT *
+FROM country WHERE continent = 'Europe'
+;;
+
+b)
+SELECT name
+FROM country
+WHERE population > 10000000 AND lifeexpectancy < 70
+;;
+
+c)
+SELECT name
+FROM city
+WHERE name LIKE 'R%' AND name NOT LIKE '%o%'
+;;
+
+d)
+SELECT name
+FROM country
+WHERE name = (SELECT name
+             FROM city
+             WHERE id = capital)
+;;
+
+e)
+SELECT name
+FROM country
+WHERE code IN
+(
+SELECT countrycode
+FROM countrylanguage
+GROUP BY countrycode
+HAVING COUNT (language) >= 10 AND COUNT (language) <= 15
+)
+GROUP BY code
+ORDER BY name
+;;
+
+f)
+SELECT name
+FROM city
+WHERE countrycode IN (
+SELECT code
+FROM country
+WHERE continent = 'Asia'
+) AND population > ALL (
+SELECT population
+FROM country
+WHERE region = 'Nordic Countries')
+;;
+
+g)
+SELECT COUNT(DISTINCT country.name) 
+FROM (
+   SELECT language
+   FROM countrylanguage
+   GROUP BY language
+   HAVING COUNT (language) = 1
+) as l, country, countrylanguage 
+WHERE countrylanguage.language = l.language AND isofficial AND countrylanguage.countrycode=country.code
+
+--- rešitev Tilen ---
+
+SELECT COUNT(co.code) 
+FROM country as co, countrylanguage as cl 
+WHERE cl.countrycode = co.code AND cl.isofficial AND cl.language != ALL (
+   SELECT Language 
+   FROM countrylanguage 
+   WHERE countrycode != cl.countrycode
+);;
+
+--- rešitev Tilen ---
